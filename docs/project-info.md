@@ -1,10 +1,10 @@
 ## Project Information
 
-- Project ID: P01
-- Project Name: Yummy Catering Event Management System
-- Class: OOP Java – K68A
+- Project ID: P08
+- Project Name: Real Estate Apartment Listing and Filter System
+- Class: OOP Java – AI66B
 
 ## Members
-- Nguyễn Văn A – Leader
-- Trần Thị B – Backend
-- Lê Văn C – GUI
+- Nguyễn Đỗ Ánh Dương – Database
+- Nguyễn Sơn Hải - Frontend
+- Nguyễn Đình Thắng - Backend
