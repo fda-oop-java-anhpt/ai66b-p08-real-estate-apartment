@@ -4,4 +4,8 @@ package com.oop.project.model;
  */
 public interface POJO {
     int getId();
+    
+    @Override
+    String toString();
 }
+
