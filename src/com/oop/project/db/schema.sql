@@ -17,7 +17,7 @@ CREATE TABLE `apartment` (
   `apartment_id` int PRIMARY KEY AUTO_INCREMENT,
   `address` varchar(255) not null,
   `city` varchar(255) not null,
-  `price` float, 
+  `price` float, -- in billions vnd
   constraint chk_pos_price check (price > 0) ,
   `bedrooms` int,
   constraint chk_pos_bed check (bedrooms > 0),
