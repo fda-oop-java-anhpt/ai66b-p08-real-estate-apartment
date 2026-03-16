@@ -4,12 +4,12 @@ create database real_estate;
 use real_estate;
 
 -- create tables
-CREATE TABLE `user` (
+CREATE TABLE `users` (
   `username` varchar(255) primary key,
   `password_hash` varchar(64) not null , -- hash the original pw
-  `role` varchar(255) not null, -- admin, agent, client
-  constraint chk_role check(role in ('admin', 'agent', 'client')),
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `role` varchar(255) not null, -- admin, agent(viewer)
+  constraint chk_role check(`role` in ('admin', 'agent')),
+ `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `last_login` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -77,17 +77,17 @@ ALTER TABLE `apartmentAmenities`
   ADD FOREIGN KEY (`amenity_id`) REFERENCES `amenities` (`amenity_id`);
 
 ALTER TABLE `logs`
-  ADD FOREIGN KEY (`username`) REFERENCES `user` (`username`);
+  ADD FOREIGN KEY (`username`) REFERENCES `users` (`username`);
 
 ALTER TABLE `favourites`
-  ADD FOREIGN KEY (`username`) REFERENCES `user` (`username`),
+  ADD FOREIGN KEY (`username`) REFERENCES `users` (`username`),
   ADD FOREIGN KEY (`apartment_id`) REFERENCES `apartment` (`apartment_id`);
 
 ALTER TABLE `notes`
-  ADD FOREIGN KEY (`username`) REFERENCES `user` (`username`),
+  ADD FOREIGN KEY (`username`) REFERENCES `users` (`username`),
   ADD FOREIGN KEY (`apartment_id`) REFERENCES `apartment` (`apartment_id`);
 
 ALTER TABLE `login_history`
-  ADD FOREIGN KEY (`username`) REFERENCES `user` (`username`);
+  ADD FOREIGN KEY (`username`) REFERENCES `users` (`username`);
 
 
