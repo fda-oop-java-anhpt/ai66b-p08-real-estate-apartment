@@ -42,14 +42,14 @@ public class UserRepository implements DAO {
         try(
             // Search for user
             PreparedStatement find_user = jcon.prepareStatement("""
-                                                        SELECT * FROM user
-                                                        WHERE user.username = ?
-                                                        AND user.password_hash = ?
-                                                        AND user.role = ?
+                                                        SELECT * FROM users
+                                                        WHERE users.username = ?
+                                                        AND users.password_hash = ?
+                                                        AND users.role = ?
                                                         """);
             // Then update last login datetime
             PreparedStatement update_last_login = jcon.prepareStatement("""
-                                                                    UPDATE user SET last_login = NOW() WHERE username = ?
+                                                                    UPDATE users SET last_login = NOW() WHERE username = ?
                                                                     """)
             ) {
             
@@ -108,7 +108,7 @@ public class UserRepository implements DAO {
         try (
             // Add new user
             PreparedStatement regis = jcon.prepareStatement("""
-                                                            INSERT INTO user(username, password_hash, role)
+                                                            INSERT INTO users(username, password_hash, role)
                                                             VALUE(?, ?, ?)
                                                             """))
         {
