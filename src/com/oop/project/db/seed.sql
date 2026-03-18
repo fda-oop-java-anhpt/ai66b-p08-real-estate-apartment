@@ -1,15 +1,15 @@
 INSERT INTO users (username, password_hash, role) VALUES
 ('admin1', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', 'admin'), -- "password"
-('admin2', '2c1743a391305fbf367df8e4f069f9f9a44fbdc0b6f0f3b4c8f3a3c3d5f4c8f0', 'admin'), -- "admin123"
-('admin3', '8d969eef6ecad3c29a3a629280e686cff8fabd3c5b3f5f3c3f5f3c3f5f3c3f5f', 'admin'), -- "123456"
+('admin2', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'admin'), -- "admin123"
+('admin3', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'admin'), -- "123456"
 
-('agent1', '6cf615d5d44b8a0c0f6f0f3c3f5f3c3f5f3c3f5f3c3f5f3c3f5f3c3f5f3c3f5f', 'agent'), -- "qwerty"
-('agent2', 'bcb1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1', 'agent'), -- "letmein"
-('agent3', '9c56cc51b374c3b4c8f3a3c3d5f4c8f09c56cc51b374c3b4c8f3a3c3d5f4c8f0', 'agent'), -- "welcome"
-('agent4', '5d41402abc4b2a76b9719d911017c592', 'agent'), -- "hello"
-('agent5', '098f6bcd4621d373cade4e832627b4f6', 'agent'), -- "test"
-('agent6', 'e99a18c428cb38d5f260853678922e03', 'agent'), -- "abc123"
-('agent7', '7c6a180b36896a0a8c02787eeafb0e4c', 'agent'); -- "password1"
+('agent1', '65e84be33532fb784c48129675f9eff3a682b27168c0ea744b2cf58ee02337c5', 'agent'), -- "qwerty"
+('agent2', '1c8bfe8f801d79745c4631d09fff36c82aa37fc4cce4fc946683d7b336b63032', 'agent'), -- "letmein"
+('agent3', '280d44ab1e9f79b5cce2dd4f58f5fe91f0fbacdac9f7447dffc318ceb79f2d02', 'agent'), -- "welcome"
+('agent4', '2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824', 'agent'), -- "hello"
+('agent5', '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08', 'agent'), -- "test"
+('agent6', '6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090', 'agent'), -- "abc123"
+('agent7', '0b14d501a594442a01c6859541bcb3e8164d183d32937b851835442f69d5c94e', 'agent'); -- "password1"
 
 INSERT INTO apartment (address, city, price, bedrooms, size, category) VALUES
 -- Luxury (10)
