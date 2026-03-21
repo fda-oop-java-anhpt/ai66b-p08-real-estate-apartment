@@ -20,115 +20,60 @@ END$$
 
 DELIMITER ;
 
-DELIMITER $$
+delimiter //
+create trigger delamen_apar
+before delete on amenities
+for each row
+begin
+	delete from apartmentamenities
+    where amenity_id = old.amenity_id;
+end // 
+	
+delimiter ;
 
--- Log INSERT on notes
-CREATE TRIGGER after_notes_insert
-AFTER INSERT ON notes
-FOR EACH ROW
-BEGIN
-    INSERT INTO logs (username, action, table_name)
-    VALUES (NEW.username, 'INSERT', 'notes');
-END$$
+delimiter //
+create trigger delapar_amen
+before delete on apartment
+for each row 
+begin
+	delete from apartmentamenities
+    where apartment_id = old.apartment_id;
+end //
+delimiter ;
 
--- Log UPDATE on notes
-CREATE TRIGGER after_notes_update
-AFTER UPDATE ON notes
-FOR EACH ROW
-BEGIN
-    INSERT INTO logs (username, action, table_name)
-    VALUES (NEW.username, 'UPDATE', 'notes');
-END$$
+delimiter //
+create trigger delapar_fav
+before delete on apartment
+for each row
+begin
+	delete from favourites
+    where apartment_id = old.apartment_id;
+end //
+delimiter ;
 
--- Log DELETE on notes
-CREATE TRIGGER after_notes_delete
-AFTER DELETE ON notes
-FOR EACH ROW
-BEGIN
-    INSERT INTO logs (username, action, table_name)
-    VALUES (OLD.username, 'DELETE', 'notes');
-END$$
+delimiter //
+create trigger delapar_note
+before delete on apartment
+for each row
+begin
+	delete from notes
+    where apartment_id = old.apartment_id;
+end //
+delimiter ;
 
--- Log INSERT on amenities
-CREATE TRIGGER after_amenities_insert
-AFTER INSERT ON amenities
-FOR EACH ROW
-BEGIN
-    INSERT INTO logs (username, action, table_name)
-    VALUES (NEW.username, 'INSERT', 'amenities');
-END$$
+-- testing section, delete later
+insert into amenities(name) values ('sofa');
+select * from notes;
+drop trigger delamen_apar;
 
--- Log UPDATE on amenities
-CREATE TRIGGER after_amenities_update
-AFTER UPDATE ON amenities
-FOR EACH ROW
-BEGIN
-    INSERT INTO logs (username, action, table_name)
-    VALUES (NEW.username, 'UPDATE', 'amenities');
-END$$
+update notes set content = 'test update trigger' where note_id = 5;
 
--- Log DELETE on amenities
-CREATE TRIGGER after_amenities_delete
-AFTER DELETE ON amenities
-FOR EACH ROW
-BEGIN
-    INSERT INTO logs (username, action, table_name)
-    VALUES (OLD.username, 'DELETE', 'amenities');
-END$$
+update apartment set price = 20.4 where apartment_id = 1;
 
--- Log INSERT on apartment
-CREATE TRIGGER after_apartment_insert
-AFTER INSERT ON apartment
-FOR EACH ROW
-BEGIN
-    INSERT INTO logs (username, action, table_name)
-    VALUES (NEW.username, 'INSERT', 'apartment');
-END$$
+select * from apartmentamenities;
+select * from notes;
+select * from favourites;
 
--- Log UPDATE on apartment
-CREATE TRIGGER after_apartment_update
-AFTER UPDATE ON apartment
-FOR EACH ROW
-BEGIN
-    INSERT INTO logs (username, action, table_name)
-    VALUES (NEW.username, 'UPDATE', 'apartment');
-END$$
+delete from amenities where amenity_id = 4;
 
--- Log DELETE on apartment
-CREATE TRIGGER after_apartment_delete
-AFTER DELETE ON apartment
-FOR EACH ROW
-BEGIN
-    INSERT INTO logs (username, action, table_name)
-    VALUES (OLD.username, 'DELETE', 'apartment');
-END$$
-
--- Log INSERT on apartmentamenities
-CREATE TRIGGER after_apartmentamenities_insert
-AFTER INSERT ON apartmentamenities
-FOR EACH ROW
-BEGIN
-    INSERT INTO logs (username, action, table_name)
-    VALUES (NEW.username, 'INSERT', 'apartmentAmenities');
-END$$
-
--- Log UPDATE on apartmentamenities
-CREATE TRIGGER after_apartmentamenities_update
-AFTER UPDATE ON apartmentamenities
-FOR EACH ROW
-BEGIN
-    INSERT INTO logs (username, action, table_name)
-    VALUES (NEW.username, 'UPDATE', 'apartmentAmenities');
-END$$
-
--- Log DELETE on apartmentamenities
-CREATE TRIGGER after_apartmentamenities_delete
-AFTER DELETE ON apartmentamenities
-FOR EACH ROW
-BEGIN
-    INSERT INTO logs (username, action, table_name)
-    VALUES (OLD.username, 'DELETE', 'apartmentAmenities');
-END$$
-
-DELIMITER ;
-
+delete from apartment where apartment_id = 3;
