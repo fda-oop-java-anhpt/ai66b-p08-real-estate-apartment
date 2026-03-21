@@ -56,13 +56,11 @@ CREATE TABLE `notes` (
 );
 
 CREATE TABLE universal_log (
-    log_id SERIAL PRIMARY KEY,
-    table_name TEXT,        
-    action_type TEXT,       
-    user_name TEXT,        
-    action_time TIMESTAMP,  
-    old_data JSON,        
-    new_data JSON       
+    log_id  int PRIMARY KEY auto_increment,
+    table_name varchar(255),        
+    action_type varchar(255),       
+    username varchar(255),        
+    action_time TIMESTAMP       
 );
 
 create table `login_history` (
@@ -76,7 +74,7 @@ ALTER TABLE `apartmentAmenities`
   ADD FOREIGN KEY (`apartment_id`) REFERENCES `apartment` (`apartment_id`),
   ADD FOREIGN KEY (`amenity_id`) REFERENCES `amenities` (`amenity_id`);
 
-ALTER TABLE `logs`
+ALTER TABLE `universal_log`
   ADD FOREIGN KEY (`username`) REFERENCES `users` (`username`);
 
 ALTER TABLE `favourites`
