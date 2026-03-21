@@ -55,14 +55,14 @@ CREATE TABLE `notes` (
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE `logs` ( -- alter db history
-  `log_id` int PRIMARY KEY AUTO_INCREMENT,
-  `username` varchar(255),
-  `action` varchar(255),
-  `table_name` varchar(255),
-  constraint chk_tbl check (`table_name` in ('user', 'apartment', 'notes', 
-		'favourites', 'apartmentAmenities', 'amenities', 'login_history')),
-  `timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE universal_log (
+    log_id SERIAL PRIMARY KEY,
+    table_name TEXT,        
+    action_type TEXT,       
+    user_name TEXT,        
+    action_time TIMESTAMP,  
+    old_data JSON,        
+    new_data JSON       
 );
 
 create table `login_history` (
