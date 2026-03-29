@@ -1,7 +1,12 @@
+package com.oop.project.ui;
 
-public class Main {
+import javax.swing.SwingUtilities;
 
+public class Test {
     public static void main(String[] args) {
-        System.out.println("Project started!");
+        SwingUtilities.invokeLater(() -> {
+            ApartmentWorkspaceFrame app = new ApartmentWorkspaceFrame();
+            app.setVisible(true);
+        });
     }
 }
