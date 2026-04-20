@@ -34,6 +34,8 @@ public class UserRepository implements DAO {
         Connection jcon = new DBConnection().establish();
         jcon.setAutoCommit(false);
         ResultSet rs = null;
+        
+        DBConnection.setCurrentUser(jcon, this.username);
 
         try (
             PreparedStatement find_user = jcon.prepareStatement("""
@@ -89,6 +91,8 @@ public class UserRepository implements DAO {
         // Establish new connection for register action.
         Connection jcon = new DBConnection().establish();
         jcon.setAutoCommit(false);  // Enable SQL transactions
+        
+        DBConnection.setCurrentUser(jcon, this.username);
         
         // Create a prepared statement for MySQL transaction.
         try (
