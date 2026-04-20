@@ -4,6 +4,7 @@ import com.oop.project.db.DBConnection;
 import com.oop.project.model.Apartment;
 import com.oop.project.model.Amenity;
 import com.oop.project.util.ApartmentCategorizer;
+import com.oop.project.util.SessionManager;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -20,6 +21,7 @@ public class ApartmentRepository implements DAO {
         Connection conn = null;
         try {
             conn = new DBConnection().establish();
+            DBConnection.setCurrentUser(conn, SessionManager.getCurrentUsername());
             conn.setAutoCommit(false);
 
             int apartmentId;
@@ -118,6 +120,7 @@ public class ApartmentRepository implements DAO {
         Connection conn = null;
         try {
             conn = new DBConnection().establish();
+            DBConnection.setCurrentUser(conn, SessionManager.getCurrentUsername());
             conn.setAutoCommit(false);
 
             // Update apartment
@@ -174,6 +177,7 @@ public class ApartmentRepository implements DAO {
         String sql = "DELETE FROM apartment WHERE apartment_id = ?";
         try (Connection conn = new DBConnection().establish();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
+            DBConnection.setCurrentUser(conn, SessionManager.getCurrentUsername());
             stmt.setInt(1, apartmentId);
             stmt.executeUpdate();
         }
