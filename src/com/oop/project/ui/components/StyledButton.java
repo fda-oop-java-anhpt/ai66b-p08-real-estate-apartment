@@ -34,4 +34,10 @@ public class StyledButton extends JButton {
             }
         });
     }
+
+    public void setNormalColor(Color color) {
+        this.normalColor = color;
+        this.hoverColor = color.darker();
+        setBackground(normalColor);
+    }
 }
