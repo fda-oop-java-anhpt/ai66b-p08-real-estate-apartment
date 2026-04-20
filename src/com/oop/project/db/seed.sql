@@ -11,42 +11,42 @@ INSERT INTO users (username, password_hash, role) VALUES
 ('agent6', '6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090', 'agent'), -- "abc123"
 ('agent7', '0b14d501a594442a01c6859541bcb3e8164d183d32937b851835442f69d5c94e', 'agent'); -- "password1"
 
-INSERT INTO apartment (address, city, price, bedrooms, size, category) VALUES
+INSERT INTO apartment (address, city, price, bedrooms, size, category, status) VALUES
 -- Luxury (10)
-('123 Le Loi', 'Ho Chi Minh City', 15.2, 4, 120, 'luxury'),
-('45 Tran Hung Dao', 'Hanoi', 18.5, 5, 150, 'luxury'),
-('88 Vo Nguyen Giap', 'Da Nang', 12.7, 3, 95, 'luxury'),
-('12 Nguyen Hue', 'Ho Chi Minh City', 20.1, 5, 160, 'luxury'),
-('77 Ly Thuong Kiet', 'Hue', 11.3, 3, 100, 'luxury'),
-('56 Bach Dang', 'Da Nang', 14.8, 4, 110, 'luxury'),
-('9 Pham Van Dong', 'Nha Trang', 13.6, 3, 105, 'luxury'),
-('101 Nguyen Van Cu', 'Can Tho', 10.9, 3, 90, 'luxury'),
-('33 Tran Phu', 'Ha Long', 16.4, 4, 130, 'luxury'),
-('5 Le Thanh Ton', 'Ho Chi Minh City', 19.0, 5, 155, 'luxury'),
+('123 Le Loi', 'Ho Chi Minh City', 15.2, 4, 120, 'luxury', 'rented'),
+('45 Tran Hung Dao', 'Hanoi', 18.5, 5, 150, 'luxury', 'empty'),
+('88 Vo Nguyen Giap', 'Da Nang', 12.7, 3, 95, 'luxury', 'rented'),
+('12 Nguyen Hue', 'Ho Chi Minh City', 20.1, 5, 160, 'luxury', 'empty'),
+('77 Ly Thuong Kiet', 'Hue', 11.3, 3, 100, 'luxury', 'rented'),
+('56 Bach Dang', 'Da Nang', 14.8, 4, 110, 'luxury', 'empty'),
+('9 Pham Van Dong', 'Nha Trang', 13.6, 3, 105, 'luxury', 'rented'),
+('101 Nguyen Van Cu', 'Can Tho', 10.9, 3, 90, 'luxury', 'empty'),
+('33 Tran Phu', 'Ha Long', 16.4, 4, 130, 'luxury', 'rented'),
+('5 Le Thanh Ton', 'Ho Chi Minh City', 19.0, 5, 155, 'luxury', 'empty'),
 
 -- Standard (10)
-('22 Nguyen Trai', 'Hanoi', 5.2, 2, 70, 'standard'),
-('67 Hoang Dieu', 'Da Nang', 4.8, 2, 65, 'standard'),
-('34 Le Duan', 'Hue', 6.1, 3, 80, 'standard'),
-('89 Tran Phu', 'Nha Trang', 5.7, 2, 75, 'standard'),
-('12 Nguyen Thi Minh Khai', 'Ho Chi Minh City', 6.5, 3, 85, 'standard'),
-('45 Phan Chu Trinh', 'Da Lat', 4.9, 2, 68, 'standard'),
-('78 Cach Mang Thang 8', 'Can Tho', 5.3, 2, 72, 'standard'),
-('23 Tran Hung Dao', 'Hoi An', 6.0, 3, 82, 'standard'),
-('56 Nguyen Van Linh', 'Da Nang', 5.8, 2, 78, 'standard'),
-('90 Le Loi', 'Hanoi', 6.2, 3, 88, 'standard'),
+('22 Nguyen Trai', 'Hanoi', 5.2, 2, 70, 'standard', 'rented'),
+('67 Hoang Dieu', 'Da Nang', 4.8, 2, 65, 'standard', 'empty'),
+('34 Le Duan', 'Hue', 6.1, 3, 80, 'standard', 'rented'),
+('89 Tran Phu', 'Nha Trang', 5.7, 2, 75, 'standard', 'empty'),
+('12 Nguyen Thi Minh Khai', 'Ho Chi Minh City', 6.5, 3, 85, 'standard', 'rented'),
+('45 Phan Chu Trinh', 'Da Lat', 4.9, 2, 68, 'standard', 'empty'),
+('78 Cach Mang Thang 8', 'Can Tho', 5.3, 2, 72, 'standard', 'rented'),
+('23 Tran Hung Dao', 'Hoi An', 6.0, 3, 82, 'standard', 'empty'),
+('56 Nguyen Van Linh', 'Da Nang', 5.8, 2, 78, 'standard', 'rented'),
+('90 Le Loi', 'Hanoi', 6.2, 3, 88, 'standard', 'empty'),
 
 -- Budget (10)
-('12 Nguyen Van Troi', 'Ho Chi Minh City', 2.1, 1, 40, 'budget'),
-('34 Tran Cao Van', 'Da Nang', 1.9, 1, 35, 'budget'),
-('56 Nguyen Thai Hoc', 'Hue', 2.3, 1, 42, 'budget'),
-('78 Le Hong Phong', 'Nha Trang', 2.5, 2, 50, 'budget'),
-('90 Tran Quang Khai', 'Hanoi', 2.0, 1, 38, 'budget'),
-('11 Phan Dinh Phung', 'Da Lat', 2.4, 2, 45, 'budget'),
-('22 Nguyen Van Linh', 'Can Tho', 2.2, 1, 36, 'budget'),
-('33 Tran Hung Dao', 'Hoi An', 2.6, 2, 48, 'budget'),
-('44 Ly Thuong Kiet', 'Ha Long', 2.1, 1, 37, 'budget'),
-('55 Nguyen Trai', 'Ho Chi Minh City', 2.7, 2, 52, 'budget');
+('12 Nguyen Van Troi', 'Ho Chi Minh City', 2.1, 1, 40, 'budget', 'rented'),
+('34 Tran Cao Van', 'Da Nang', 1.9, 1, 35, 'budget', 'empty'),
+('56 Nguyen Thai Hoc', 'Hue', 2.3, 1, 42, 'budget', 'rented'),
+('78 Le Hong Phong', 'Nha Trang', 2.5, 2, 50, 'budget', 'empty'),
+('90 Tran Quang Khai', 'Hanoi', 2.0, 1, 38, 'budget', 'rented'),
+('11 Phan Dinh Phung', 'Da Lat', 2.4, 2, 45, 'budget', 'empty'),
+('22 Nguyen Van Linh', 'Can Tho', 2.2, 1, 36, 'budget', 'rented'),
+('33 Tran Hung Dao', 'Hoi An', 2.6, 2, 48, 'budget', 'empty'),
+('44 Ly Thuong Kiet', 'Ha Long', 2.1, 1, 37, 'budget', 'rented'),
+('55 Nguyen Trai', 'Ho Chi Minh City', 2.7, 2, 52, 'budget', 'empty');
 
 INSERT INTO amenities (name) VALUES
 ('Swimming Pool'),
@@ -100,5 +100,3 @@ INSERT INTO login_history (username) VALUES
 ('agent3'),
 ('agent5'),
 ('agent7');
-
-
