@@ -1,19 +1,17 @@
-// LoginHistory.java
 package com.oop.project.model;
 
 import java.sql.Timestamp;
 
-/**
- * Plain Old Java Object for the 'login_history' table.
- */
 public class LoginHistory implements POJO {
     private final int loginId;
     private final String username;
+    private final String role;
     private final Timestamp logTime;
 
-    public LoginHistory(int loginId, String username, Timestamp logTime) {
+    public LoginHistory(int loginId, String username, String role, Timestamp logTime) {
         this.loginId = loginId;
         this.username = username;
+        this.role = role;
         this.logTime = logTime;
     }
 
@@ -30,12 +28,16 @@ public class LoginHistory implements POJO {
         return username;
     }
 
+    public String getRole() {
+        return role;
+    }
+
     public Timestamp getLogTime() {
         return logTime;
     }
 
     @Override
     public String toString() {
-        return "LoginHistory(" + loginId + ", " + username + ", " + logTime + ")";
+        return "LoginHistory(" + loginId + ", " + username + ", " + role + ", " + logTime + ")";
     }
 }
