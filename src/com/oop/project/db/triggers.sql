@@ -20,43 +20,42 @@ END$$
 
 DELIMITER ;
 
-delimiter //
-create trigger delamen_apar
-before delete on amenities
-for each row
-begin
-	delete from apartmentamenities
-    where amenity_id = old.amenity_id;
-end // 
-	
-delimiter ;
+DELIMITER //
+CREATE TRIGGER delamen_apar
+BEFORE DELETE ON amenities
+FOR EACH ROW
+BEGIN
+    DELETE FROM apartmentAmenities
+    WHERE amenity_id = OLD.amenity_id;
+END //
+DELIMITER ;
 
-delimiter //
-create trigger delapar_amen
-before delete on apartment
-for each row 
-begin
-	delete from apartmentamenities
-    where apartment_id = old.apartment_id;
-end //
-delimiter ;
+DELIMITER //
+CREATE TRIGGER delapar_amen
+BEFORE DELETE ON apartment
+FOR EACH ROW
+BEGIN
+    DELETE FROM apartmentAmenities
+    WHERE apartment_id = OLD.apartment_id;
+END //
+DELIMITER ;
 
-delimiter //
-create trigger delapar_fav
-before delete on apartment
-for each row
-begin
-	delete from favourites
-    where apartment_id = old.apartment_id;
-end //
-delimiter ;
+DELIMITER //
+CREATE TRIGGER delapar_fav
+BEFORE DELETE ON apartment
+FOR EACH ROW
+BEGIN
+    DELETE FROM favourites
+    WHERE apartment_id = OLD.apartment_id;
+END //
+DELIMITER ;
 
-delimiter //
-create trigger delapar_note
-before delete on apartment
-for each row
-begin
-	delete from notes
-    where apartment_id = old.apartment_id;
-end //
-delimiter ;
+DELIMITER //
+CREATE TRIGGER delapar_note
+BEFORE DELETE ON apartment
+FOR EACH ROW
+BEGIN
+    DELETE FROM notes
+    WHERE apartment_id = OLD.apartment_id;
+END //
+DELIMITER ;
