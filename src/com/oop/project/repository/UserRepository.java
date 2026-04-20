@@ -31,69 +31,55 @@ public class UserRepository implements DAO {
     * Login's core logic method
     */
     public User login() throws SQLException {
-        // Establish new connection for login action.
         Connection jcon = new DBConnection().establish();
-        jcon.setAutoCommit(false);   // Enable SQL transactions
+        jcon.setAutoCommit(false);
         ResultSet rs = null;
-        
-        
-        // Create a prepared statements for MySQL transaction.
-        // Prepared statements help preventing SQL injection attacks.
-        try(
-            // Search for user
+
+        try (
             PreparedStatement find_user = jcon.prepareStatement("""
-                                                        SELECT * FROM users
-                                                        WHERE users.username = ?
-                                                        AND users.password_hash = ?
-                                                        AND users.role = ?
-                                                        """);
-            // Then update last login datetime
+                SELECT username, role, created_at, last_login 
+                FROM users
+                WHERE users.username = ?
+                AND users.password_hash = ?
+                AND users.role = ?
+                """);
             PreparedStatement update_last_login = jcon.prepareStatement("""
-                                                                    UPDATE users SET last_login = NOW() WHERE username = ?
-                                                                    """)
-            ) {
-            
-            // Inject the parameters to '?' placeholders in the SQL statements.
+                UPDATE users SET last_login = NOW() WHERE username = ?
+                """)
+        ) {
             find_user.setString(1, this.username);
             find_user.setString(2, this.password);
             find_user.setString(3, this.role);
+            update_last_login.setString(1, this.username);
 
-            update_last_login.setString(1, username);
-            
-            
-            // Execute statement & return the query result (Later be used to create User object)
             rs = find_user.executeQuery();
             update_last_login.executeUpdate();
             jcon.commit();
-            
 
-            // close the statements after execution.
             update_last_login.close();
 
-            
-            // Scan for the query's result row.
             while (rs.next()) {
-                // Create new User object (POJO) if valid
-                User user = new User(rs.getString("username"), rs.getString("role"));
+                User user = new User(
+                    rs.getString("username"),
+                    rs.getString("role"),
+                    rs.getTimestamp("created_at"),
+                    rs.getTimestamp("last_login")
+                );
 
-                // Close all used resources
                 rs.close();
                 find_user.close();
                 jcon.close();
 
-                // return the user POJO
                 return user;
             }
-            
+
         } catch (SQLException e) {
-        // Roll back and close all resources if error
-        jcon.rollback();
-        jcon.close();
-        throw e;
+            jcon.rollback();
+            jcon.close();
+            throw e;
         }
 
-       // return none if user not found
-       return null;
+        return null;
     }
     
     /*
