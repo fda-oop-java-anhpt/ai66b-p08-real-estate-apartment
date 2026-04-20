@@ -18,11 +18,10 @@ public class LoginScreen extends JFrame {
     private StyledComboBox<String> roleComboBox;
     private JCheckBox showPasswordCheckBox;
 
-    // Buttons
-    private StyledButton loginButton;
-    private StyledButton registerButton;
+    // Single action button (Login / Register)
+    private StyledButton actionButton;
 
-    // Toggle between login and register modes
+    // Toggle link
     private JLabel toggleModeLabel;
     private boolean isRegisterMode = false;
 
@@ -36,16 +35,16 @@ public class LoginScreen extends JFrame {
     public LoginScreen() {
         authController = new AuthenticationController();
 
-        setTitle("Real Estate Management System");
+        setTitle("Real Estate Management System - Login");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(550, 500);
+        setSize(550, 520);
         setLocationRelativeTo(null);
         setResizable(false);
 
         initComponents();
         layoutComponents();
         applyStyling();
-        updateModeUI(); // Start in login mode
+        updateModeUI();
     }
 
     private void initComponents() {
@@ -54,8 +53,8 @@ public class LoginScreen extends JFrame {
         confirmPasswordField = new StyledPasswordField();
         roleComboBox = new StyledComboBox<>(new String[]{"admin", "agent"});
 
-        loginButton = new StyledButton("Login", PRIMARY_COLOR);
-        registerButton = new StyledButton("Register", ACCENT_COLOR);
+        actionButton = new StyledButton("Login", PRIMARY_COLOR);
+        actionButton.addActionListener(new ActionButtonListener());
 
         showPasswordCheckBox = new JCheckBox("Show Password");
         showPasswordCheckBox.setFont(new Font("Segoe UI", Font.PLAIN, 12));
@@ -67,7 +66,6 @@ public class LoginScreen extends JFrame {
             confirmPasswordField.setPasswordVisible(show);
         });
 
-        // Toggle link
         toggleModeLabel = new JLabel("Don't have an account? Register here");
         toggleModeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         toggleModeLabel.setForeground(PRIMARY_COLOR);
@@ -85,14 +83,10 @@ public class LoginScreen extends JFrame {
             }
         });
 
-        // Action listeners
-        loginButton.addActionListener(new LoginAction());
-        registerButton.addActionListener(new RegisterAction());
-
-        // Enter key triggers appropriate action
-        usernameField.addActionListener(e -> submitAction());
-        passwordField.addActionListener(e -> submitAction());
-        confirmPasswordField.addActionListener(e -> submitAction());
+        // Enter key triggers action
+        usernameField.addActionListener(e -> actionButton.doClick());
+        passwordField.addActionListener(e -> actionButton.doClick());
+        confirmPasswordField.addActionListener(e -> actionButton.doClick());
     }
 
     private void layoutComponents() {
@@ -101,31 +95,42 @@ public class LoginScreen extends JFrame {
         mainPanel.setBackground(Color.WHITE);
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.insets = new Insets(8, 10, 8, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridwidth = 2;
 
         // Title
         JLabel titleLabel = new JLabel("🏠 Real Estate Manager");
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
         titleLabel.setForeground(PRIMARY_COLOR);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        gbc.gridy = 0;
+        gbc.gridx = 0; gbc.gridy = 0;
+        gbc.gridwidth = 2;
         gbc.insets = new Insets(5, 5, 20, 5);
         mainPanel.add(titleLabel, gbc);
 
-        // Reset gridwidth
         gbc.gridwidth = 1;
-        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.insets = new Insets(8, 10, 8, 10);
 
         // Username
-        addLabelAndField(mainPanel, gbc, 1, "Username:", usernameField);
+        JLabel userLabel = new JLabel("Username:");
+        userLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        userLabel.setForeground(TEXT_COLOR);
+        gbc.gridx = 0; gbc.gridy = 1;
+        mainPanel.add(userLabel, gbc);
+        gbc.gridx = 1;
+        mainPanel.add(usernameField, gbc);
 
         // Password
-        addLabelAndField(mainPanel, gbc, 2, "Password:", passwordField);
+        JLabel passLabel = new JLabel("Password:");
+        passLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        passLabel.setForeground(TEXT_COLOR);
+        gbc.gridx = 0; gbc.gridy = 2;
+        mainPanel.add(passLabel, gbc);
+        gbc.gridx = 1;
+        mainPanel.add(passwordField, gbc);
 
-        // Confirm Password (only visible in register mode)
-        JLabel confirmLabel = new JLabel("Confirm Password:");
+        // Confirm Password (hidden in login mode)
+        JLabel confirmLabel = new JLabel("Confirm:");
         confirmLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         confirmLabel.setForeground(TEXT_COLOR);
         confirmLabel.setName("confirmLabel");
@@ -135,9 +140,9 @@ public class LoginScreen extends JFrame {
         mainPanel.add(confirmPasswordField, gbc);
         confirmPasswordField.setName("confirmField");
 
-        // Show password checkbox
+        // Show password
         gbc.gridx = 1; gbc.gridy = 4;
-        gbc.insets = new Insets(0, 10, 10, 10);
+        gbc.insets = new Insets(0, 10, 5, 10);
         gbc.anchor = GridBagConstraints.WEST;
         mainPanel.add(showPasswordCheckBox, gbc);
 
@@ -152,33 +157,20 @@ public class LoginScreen extends JFrame {
         gbc.gridx = 1;
         mainPanel.add(roleComboBox, gbc);
 
-        // Buttons panel
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        buttonPanel.setBackground(Color.WHITE);
-        buttonPanel.add(loginButton);
-        buttonPanel.add(registerButton);
-
+        // Action button
         gbc.gridx = 0; gbc.gridy = 6;
         gbc.gridwidth = 2;
-        gbc.insets = new Insets(30, 5, 10, 5);
-        mainPanel.add(buttonPanel, gbc);
+        gbc.insets = new Insets(25, 5, 10, 5);
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.CENTER;
+        mainPanel.add(actionButton, gbc);
 
-        // Toggle mode link
+        // Toggle link
         gbc.gridy = 7;
-        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.insets = new Insets(10, 5, 5, 5);
         mainPanel.add(toggleModeLabel, gbc);
 
         add(mainPanel);
-    }
-
-    private void addLabelAndField(JPanel panel, GridBagConstraints gbc, int row, String labelText, JComponent field) {
-        JLabel label = new JLabel(labelText);
-        label.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        label.setForeground(TEXT_COLOR);
-        gbc.gridx = 0; gbc.gridy = row;
-        panel.add(label, gbc);
-        gbc.gridx = 1;
-        panel.add(field, gbc);
     }
 
     private void applyStyling() {
@@ -186,7 +178,7 @@ public class LoginScreen extends JFrame {
     }
 
     private void updateModeUI() {
-        // Show/hide confirm password field and label
+        // Toggle visibility of confirm password components
         Component[] components = getContentPane().getComponents();
         for (Component c : components) {
             if (c instanceof JPanel) {
@@ -198,37 +190,34 @@ public class LoginScreen extends JFrame {
             }
         }
 
-        // Update button texts and toggle label
+        // Update UI elements based on mode
         if (isRegisterMode) {
-            loginButton.setText("Cancel");
-            registerButton.setText("Create Account");
+            actionButton.setText("Register");
+            actionButton.setBackground(ACCENT_COLOR);
+            actionButton.setNormalColor(ACCENT_COLOR);
             toggleModeLabel.setText("← Back to Login");
             setTitle("Real Estate Management System - Register");
+            // Adjust size for additional field
+            setSize(550, 560);
         } else {
-            loginButton.setText("Login");
-            registerButton.setText("Register");
+            actionButton.setText("Login");
+            actionButton.setBackground(PRIMARY_COLOR);
+            actionButton.setNormalColor(PRIMARY_COLOR);
             toggleModeLabel.setText("Don't have an account? Register here");
             setTitle("Real Estate Management System - Login");
+            setSize(550, 520);
         }
 
-        // Clear password fields when switching modes
+        // Clear fields
         passwordField.setText("");
         confirmPasswordField.setText("");
         showPasswordCheckBox.setSelected(false);
         passwordField.setPasswordVisible(false);
         confirmPasswordField.setPasswordVisible(false);
 
-        // Re-layout
         revalidate();
         repaint();
-    }
-
-    private void submitAction() {
-        if (isRegisterMode) {
-            registerButton.doClick();
-        } else {
-            loginButton.doClick();
-        }
+        usernameField.requestFocus();
     }
 
     // ---------- Validation ----------
@@ -267,8 +256,7 @@ public class LoginScreen extends JFrame {
 
     // ---------- UI Helpers ----------
     private void setControlsEnabled(boolean enabled) {
-        loginButton.setEnabled(enabled);
-        registerButton.setEnabled(enabled);
+        actionButton.setEnabled(enabled);
         usernameField.setEnabled(enabled);
         passwordField.setEnabled(enabled);
         confirmPasswordField.setEnabled(enabled);
@@ -301,103 +289,89 @@ public class LoginScreen extends JFrame {
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
-    // ---------- Action Listeners ----------
-    private class LoginAction implements ActionListener {
+    // ---------- Action Listener ----------
+    private class ActionButtonListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (isRegisterMode) {
-                // Cancel registration mode
-                isRegisterMode = false;
-                updateModeUI();
-                return;
-            }
+                // Register flow
+                if (!validateRegisterInput()) return;
 
-            if (!validateLoginInput()) return;
+                String username = usernameField.getText().trim();
+                String password = new String(passwordField.getPassword());
+                String role = (String) roleComboBox.getSelectedItem();
 
-            String username = usernameField.getText().trim();
-            String password = new String(passwordField.getPassword());
-            String role = (String) roleComboBox.getSelectedItem();
+                if (!confirmRegistration(username, role)) return;
 
-            setControlsEnabled(false);
+                setControlsEnabled(false);
 
-            SwingWorker<User, Void> worker = new SwingWorker<User, Void>() {
-                @Override
-                protected User doInBackground() throws Exception {
-                    return authController.login(username, password, role);
-                }
-
-                @Override
-                protected void done() {
-                    try {
-                        User user = get();
-                        showInfo("Login successful! Welcome, " + user.getUsername() + " (" + user.getRole() + ")",
-                                 "Success");
-                        proceedToMainApp(user);
-                    } catch (Exception ex) {
-                        String message = ex.getMessage();
-                        if (ex.getCause() != null) message = ex.getCause().getMessage();
-                        showError("Login failed: " + message, "Login Error");
-                    } finally {
-                        setControlsEnabled(true);
-                        passwordField.setText("");
-                        showPasswordCheckBox.setSelected(false);
-                        passwordField.setPasswordVisible(false);
+                SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+                    @Override
+                    protected Void doInBackground() throws Exception {
+                        authController.register(username, password, role);
+                        return null;
                     }
-                }
-            };
-            worker.execute();
-        }
-    }
 
-    private class RegisterAction implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (!isRegisterMode) {
-                // Switch to register mode
-                isRegisterMode = true;
-                updateModeUI();
-                return;
-            }
-
-            if (!validateRegisterInput()) return;
-
-            String username = usernameField.getText().trim();
-            String password = new String(passwordField.getPassword());
-            String role = (String) roleComboBox.getSelectedItem();
-
-            if (!confirmRegistration(username, role)) return;
-
-            setControlsEnabled(false);
-
-            SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
-                @Override
-                protected Void doInBackground() throws Exception {
-                    authController.register(username, password, role);
-                    return null;
-                }
-
-                @Override
-                protected void done() {
-                    try {
-                        get();
-                        showInfo("User registered successfully! You can now log in.", "Registration Success");
-                        // Switch back to login mode
-                        isRegisterMode = false;
-                        updateModeUI();
-                        usernameField.requestFocus();
-                    } catch (Exception ex) {
-                        String message = ex.getMessage();
-                        if (ex.getCause() != null) message = ex.getCause().getMessage();
-                        if (message != null && message.toLowerCase().contains("duplicate")) {
-                            message = "Username already exists. Please choose another.";
+                    @Override
+                    protected void done() {
+                        try {
+                            get();
+                            showInfo("User registered successfully! You can now log in.", "Registration Success");
+                            isRegisterMode = false;
+                            updateModeUI();
+                            // Pre-fill username for convenience
+                            usernameField.setText(username);
+                            passwordField.requestFocus();
+                        } catch (Exception ex) {
+                            String message = ex.getMessage();
+                            if (ex.getCause() != null) message = ex.getCause().getMessage();
+                            if (message != null && message.toLowerCase().contains("duplicate")) {
+                                message = "Username already exists. Please choose another.";
+                            }
+                            showError("Registration failed: " + message, "Registration Error");
+                        } finally {
+                            setControlsEnabled(true);
                         }
-                        showError("Registration failed: " + message, "Registration Error");
-                    } finally {
-                        setControlsEnabled(true);
                     }
-                }
-            };
-            worker.execute();
+                };
+                worker.execute();
+            } else {
+                // Login flow
+                if (!validateLoginInput()) return;
+
+                String username = usernameField.getText().trim();
+                String password = new String(passwordField.getPassword());
+                String role = (String) roleComboBox.getSelectedItem();
+
+                setControlsEnabled(false);
+
+                SwingWorker<User, Void> worker = new SwingWorker<User, Void>() {
+                    @Override
+                    protected User doInBackground() throws Exception {
+                        return authController.login(username, password, role);
+                    }
+
+                    @Override
+                    protected void done() {
+                        try {
+                            User user = get();
+                            showInfo("Login successful! Welcome, " + user.getUsername() + " (" + user.getRole() + ")",
+                                     "Success");
+                            proceedToMainApp(user);
+                        } catch (Exception ex) {
+                            String message = ex.getMessage();
+                            if (ex.getCause() != null) message = ex.getCause().getMessage();
+                            showError("Login failed: " + message, "Login Error");
+                        } finally {
+                            setControlsEnabled(true);
+                            passwordField.setText("");
+                            showPasswordCheckBox.setSelected(false);
+                            passwordField.setPasswordVisible(false);
+                        }
+                    }
+                };
+                worker.execute();
+            }
         }
     }
 
