@@ -32,4 +32,12 @@ public class DBConnection {
         // return a connection if valid, else SQLException Error.
         return DriverManager.getConnection(URL, USERNAME, PASSWORD);
         }
+    
+    public static void setCurrentUser(Connection conn, String username) throws SQLException {
+        if (username != null && !username.isEmpty()) {
+            try (Statement stmt = conn.createStatement()) {
+                stmt.execute("SET @current_username = '" + username.replace("'", "''") + "'");
+            }
+        }
+    }
 }
