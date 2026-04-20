@@ -17,14 +17,16 @@ CREATE TABLE `apartment` (
   `apartment_id` int PRIMARY KEY AUTO_INCREMENT,
   `address` varchar(255) not null,
   `city` varchar(255) not null,
-  `price` float, -- in billions vnd
-  constraint chk_pos_price check (price > 0) ,
+  `price` float,
+  constraint chk_pos_price check (price > 0),
   `bedrooms` int,
   constraint chk_pos_bed check (bedrooms > 0),
   `size` float,
   constraint chk_pos_size check (size > 0),
-  `category` varchar(255), -- luxury, standard, budget
+  `category` varchar(255),
   constraint chk_cate check (category in ('luxury', 'standard', 'budget')),
+  `status` varchar(10) not null default 'empty',
+  constraint chk_status check (status in ('empty', 'rented')),
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -87,5 +89,3 @@ ALTER TABLE `notes`
 
 ALTER TABLE `login_history`
   ADD FOREIGN KEY (`username`) REFERENCES `users` (`username`);
-
-
