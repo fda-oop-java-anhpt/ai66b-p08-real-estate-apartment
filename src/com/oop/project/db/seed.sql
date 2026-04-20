@@ -94,9 +94,9 @@ INSERT INTO notes (username, apartment_id, content) VALUES
 ('admin2', 7, 'Luxury apartment with sea view, impressive amenities.'),
 ('agent7', 25, 'Budget apartment, convenient for students.');
 
-INSERT INTO login_history (username) VALUES
-('admin1'),
-('admin2'),
-('agent3'),
-('agent5'),
-('agent7');
+INSERT INTO login_history (username, role) VALUES
+('admin1', 'admin'),
+('admin2', 'admin'),
+('agent3', 'agent'),
+('agent5', 'agent'),
+('agent7', 'agent');
