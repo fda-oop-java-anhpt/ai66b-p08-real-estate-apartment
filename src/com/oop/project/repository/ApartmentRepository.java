@@ -1,4 +1,4 @@
-   package com.oop.project.repository;
+package com.oop.project.repository;
 
 import com.oop.project.db.DBConnection;
 import com.oop.project.model.Apartment;
