@@ -32,8 +32,8 @@ CREATE TABLE `apartment` (
 );
 
 CREATE TABLE `amenities` (
-  `amenity_id` int PRIMARY KEY AUTO_INCREMENT,
-  `name` varchar(255) -- sth like pool, tennis yard,...
+    `amenity_id` int PRIMARY KEY AUTO_INCREMENT,
+    `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL UNIQUE
 );
 
 CREATE TABLE `apartmentAmenities` ( -- this is to connect appartment and amenities table
