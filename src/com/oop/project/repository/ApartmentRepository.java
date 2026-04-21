@@ -317,7 +317,7 @@ public class ApartmentRepository implements DAO {
         return value;
     }
 
-    private Apartment mapRowToApartment(ResultSet rs) throws SQLException {
+    public Apartment mapRowToApartment(ResultSet rs) throws SQLException {
         return new Apartment(
             rs.getInt("apartment_id"),
             rs.getString("address"),
