@@ -3,6 +3,7 @@ package com.oop.project.ui;
 import com.oop.project.model.User;
 import com.oop.project.service.AuthenticationController;
 import com.oop.project.ui.components.*;
+import com.oop.project.util.SessionManager;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -27,11 +28,6 @@ public class LoginScreen extends JFrame {
 
     private final AuthenticationController authController;
 
-    // Colors
-    private static final Color PRIMARY_COLOR = new Color(41, 128, 185);
-    private static final Color ACCENT_COLOR = new Color(46, 204, 113);
-    private static final Color TEXT_COLOR = new Color(44, 62, 80);
-
     public LoginScreen() {
         authController = new AuthenticationController();
 
@@ -40,10 +36,10 @@ public class LoginScreen extends JFrame {
         setSize(550, 520);
         setLocationRelativeTo(null);
         setResizable(false);
+        getContentPane().setBackground(Theme.SURFACE);
 
         initComponents();
         layoutComponents();
-        applyStyling();
         updateModeUI();
     }
 
@@ -53,13 +49,13 @@ public class LoginScreen extends JFrame {
         confirmPasswordField = new StyledPasswordField();
         roleComboBox = new StyledComboBox<>(new String[]{"admin", "agent"});
 
-        actionButton = new StyledButton("Login", PRIMARY_COLOR);
+        actionButton = new StyledButton("Login", Theme.PRIMARY);
         actionButton.addActionListener(new ActionButtonListener());
 
         showPasswordCheckBox = new JCheckBox("Show Password");
-        showPasswordCheckBox.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        showPasswordCheckBox.setForeground(TEXT_COLOR);
-        showPasswordCheckBox.setBackground(Color.WHITE);
+        showPasswordCheckBox.setFont(Theme.SMALL_FONT);
+        showPasswordCheckBox.setForeground(Theme.TEXT_SECONDARY);
+        showPasswordCheckBox.setBackground(Theme.SURFACE);
         showPasswordCheckBox.addActionListener(e -> {
             boolean show = showPasswordCheckBox.isSelected();
             passwordField.setPasswordVisible(show);
@@ -67,8 +63,8 @@ public class LoginScreen extends JFrame {
         });
 
         toggleModeLabel = new JLabel("Don't have an account? Register here");
-        toggleModeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        toggleModeLabel.setForeground(PRIMARY_COLOR);
+        toggleModeLabel.setFont(Theme.SMALL_FONT);
+        toggleModeLabel.setForeground(Theme.PRIMARY);
         toggleModeLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         toggleModeLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -92,16 +88,16 @@ public class LoginScreen extends JFrame {
     private void layoutComponents() {
         JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBorder(new EmptyBorder(30, 40, 30, 40));
-        mainPanel.setBackground(Color.WHITE);
+        mainPanel.setBackground(Theme.SURFACE);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(8, 10, 8, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         // Title
-        JLabel titleLabel = new JLabel("🏠 Real Estate Manager");
-        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        titleLabel.setForeground(PRIMARY_COLOR);
+        JLabel titleLabel = new JLabel("Real Estate Manager");
+        titleLabel.setFont(Theme.HEADER_FONT);
+        titleLabel.setForeground(Theme.PRIMARY);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         gbc.gridx = 0; gbc.gridy = 0;
         gbc.gridwidth = 2;
@@ -113,8 +109,8 @@ public class LoginScreen extends JFrame {
 
         // Username
         JLabel userLabel = new JLabel("Username:");
-        userLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        userLabel.setForeground(TEXT_COLOR);
+        userLabel.setFont(Theme.BODY_FONT);
+        userLabel.setForeground(Theme.TEXT_PRIMARY);
         gbc.gridx = 0; gbc.gridy = 1;
         mainPanel.add(userLabel, gbc);
         gbc.gridx = 1;
@@ -122,8 +118,8 @@ public class LoginScreen extends JFrame {
 
         // Password
         JLabel passLabel = new JLabel("Password:");
-        passLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        passLabel.setForeground(TEXT_COLOR);
+        passLabel.setFont(Theme.BODY_FONT);
+        passLabel.setForeground(Theme.TEXT_PRIMARY);
         gbc.gridx = 0; gbc.gridy = 2;
         mainPanel.add(passLabel, gbc);
         gbc.gridx = 1;
@@ -131,8 +127,8 @@ public class LoginScreen extends JFrame {
 
         // Confirm Password (hidden in login mode)
         JLabel confirmLabel = new JLabel("Confirm:");
-        confirmLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        confirmLabel.setForeground(TEXT_COLOR);
+        confirmLabel.setFont(Theme.BODY_FONT);
+        confirmLabel.setForeground(Theme.TEXT_PRIMARY);
         confirmLabel.setName("confirmLabel");
         gbc.gridx = 0; gbc.gridy = 3;
         mainPanel.add(confirmLabel, gbc);
@@ -148,8 +144,8 @@ public class LoginScreen extends JFrame {
 
         // Role
         JLabel roleLabel = new JLabel("Role:");
-        roleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        roleLabel.setForeground(TEXT_COLOR);
+        roleLabel.setFont(Theme.BODY_FONT);
+        roleLabel.setForeground(Theme.TEXT_PRIMARY);
         gbc.gridx = 0; gbc.gridy = 5;
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.anchor = GridBagConstraints.CENTER;
@@ -173,10 +169,6 @@ public class LoginScreen extends JFrame {
         add(mainPanel);
     }
 
-    private void applyStyling() {
-        getContentPane().setBackground(Color.WHITE);
-    }
-
     private void updateModeUI() {
         // Toggle visibility of confirm password components
         Component[] components = getContentPane().getComponents();
@@ -193,16 +185,13 @@ public class LoginScreen extends JFrame {
         // Update UI elements based on mode
         if (isRegisterMode) {
             actionButton.setText("Register");
-            actionButton.setBackground(ACCENT_COLOR);
-            actionButton.setNormalColor(ACCENT_COLOR);
+            actionButton.setNormalColor(Theme.ACCENT);
             toggleModeLabel.setText("← Back to Login");
             setTitle("Real Estate Management System - Register");
-            // Adjust size for additional field
             setSize(550, 560);
         } else {
             actionButton.setText("Login");
-            actionButton.setBackground(PRIMARY_COLOR);
-            actionButton.setNormalColor(PRIMARY_COLOR);
+            actionButton.setNormalColor(Theme.PRIMARY);
             toggleModeLabel.setText("Don't have an account? Register here");
             setTitle("Real Estate Management System - Login");
             setSize(550, 520);
@@ -282,11 +271,8 @@ public class LoginScreen extends JFrame {
     }
 
     private void proceedToMainApp(User user) {
-        // TODO: Replace with actual main application window
-        JOptionPane.showMessageDialog(this,
-                "Welcome, " + user.getUsername() + "! Main application not yet implemented.",
-                "Success",
-                JOptionPane.INFORMATION_MESSAGE);
+        dispose();
+        new MainFrame().setVisible(true);
     }
 
     // ---------- Action Listener ----------
@@ -319,7 +305,6 @@ public class LoginScreen extends JFrame {
                             showInfo("User registered successfully! You can now log in.", "Registration Success");
                             isRegisterMode = false;
                             updateModeUI();
-                            // Pre-fill username for convenience
                             usernameField.setText(username);
                             passwordField.requestFocus();
                         } catch (Exception ex) {
