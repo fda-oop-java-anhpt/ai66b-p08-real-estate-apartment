@@ -750,7 +750,7 @@ public class ApartmentWorkspaceFrame extends JFrame {
 		int apartmentId = (Integer) table.getModel().getValueAt(selectedModelRow, 0);
 
 		String sql = "INSERT INTO favourites(username, apartment_id) VALUES(?, ?)";
-		try (Connection con = new DBConnection().establish();
+		try (Connection con = DBConnection.establish();
 			 PreparedStatement statement = con.prepareStatement(sql)) {
 			statement.setString(1, currentUser.getUsername());
 			statement.setInt(2, apartmentId);
@@ -774,7 +774,7 @@ public class ApartmentWorkspaceFrame extends JFrame {
 		int apartmentId = (Integer) favoritesModel.getValueAt(selectedModelRow, 0);
 
 		String sql = "DELETE FROM favourites WHERE username = ? AND apartment_id = ?";
-		try (Connection con = new DBConnection().establish();
+		try (Connection con = DBConnection.establish();
 			 PreparedStatement statement = con.prepareStatement(sql)) {
 			statement.setString(1, currentUser.getUsername());
 			statement.setInt(2, apartmentId);
@@ -847,7 +847,7 @@ public class ApartmentWorkspaceFrame extends JFrame {
 
 		int apartmentId = (Integer) apartmentCombo.getSelectedItem();
 		String sql = "INSERT INTO notes(username, apartment_id, content) VALUES(?, ?, ?)";
-		try (Connection con = new DBConnection().establish();
+		try (Connection con = DBConnection.establish();
 			 PreparedStatement statement = con.prepareStatement(sql)) {
 			statement.setString(1, currentUser.getUsername());
 			statement.setInt(2, apartmentId);
@@ -894,7 +894,7 @@ public class ApartmentWorkspaceFrame extends JFrame {
 		}
 
 		String sql = "UPDATE notes SET content = ?, updated_at = NOW() WHERE note_id = ? AND username = ?";
-		try (Connection con = new DBConnection().establish();
+		try (Connection con = DBConnection.establish();
 			 PreparedStatement statement = con.prepareStatement(sql)) {
 			statement.setString(1, newContent);
 			statement.setInt(2, noteId);
@@ -930,7 +930,7 @@ public class ApartmentWorkspaceFrame extends JFrame {
 		}
 
 		String sql = "DELETE FROM notes WHERE note_id = ? AND username = ?";
-		try (Connection con = new DBConnection().establish();
+		try (Connection con = DBConnection.establish();
 			 PreparedStatement statement = con.prepareStatement(sql)) {
 			statement.setInt(1, noteId);
 			statement.setString(2, currentUser.getUsername());
@@ -954,7 +954,7 @@ public class ApartmentWorkspaceFrame extends JFrame {
 				ORDER BY f.created_at DESC
 				""";
 
-		try (Connection con = new DBConnection().establish();
+		try (Connection con = DBConnection.establish();
 			 PreparedStatement statement = con.prepareStatement(sql)) {
 			statement.setString(1, currentUser.getUsername());
 			try (ResultSet rs = statement.executeQuery()) {
@@ -983,7 +983,7 @@ public class ApartmentWorkspaceFrame extends JFrame {
 				ORDER BY created_at DESC
 				""";
 
-		try (Connection con = new DBConnection().establish();
+		try (Connection con = DBConnection.establish();
 			 PreparedStatement statement = con.prepareStatement(sql)) {
 			statement.setString(1, currentUser.getUsername());
 			try (ResultSet rs = statement.executeQuery()) {
@@ -1052,7 +1052,7 @@ public class ApartmentWorkspaceFrame extends JFrame {
 				""";
 
 		List<ApartmentRow> rows = new ArrayList<>();
-		try (Connection con = new DBConnection().establish();
+		try (Connection con = DBConnection.establish();
 			 PreparedStatement statement = con.prepareStatement(sql);
 			 ResultSet rs = statement.executeQuery()) {
 			while (rs.next()) {
@@ -1074,7 +1074,7 @@ public class ApartmentWorkspaceFrame extends JFrame {
 	private List<String> fetchAllAmenities() {
 		List<String> amenities = new ArrayList<>();
 		String sql = "SELECT name FROM amenities ORDER BY name";
-		try (Connection con = new DBConnection().establish();
+		try (Connection con = DBConnection.establish();
 			 PreparedStatement statement = con.prepareStatement(sql);
 			 ResultSet rs = statement.executeQuery()) {
 			while (rs.next()) {

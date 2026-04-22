@@ -1,9 +1,9 @@
 package com.oop.project.repository;
 
-import java.sql.*;
 import com.oop.project.db.DBConnection;
 import com.oop.project.model.User;
 import com.oop.project.util.HashingUtil;
+import java.sql.*;
 
 /*
  * Data Access Object (DAO)
@@ -32,7 +32,7 @@ public class UserRepository implements DAO {
     */
     public User login() throws SQLException {
         // Establish new connection for login action.
-        Connection jcon = new DBConnection().establish();
+        Connection jcon = DBConnection.establish(); 
         jcon.setAutoCommit(false);   // Enable SQL transactions
         ResultSet rs = null;
         
@@ -101,7 +101,7 @@ public class UserRepository implements DAO {
     */
     public void register() throws SQLException {
         // Establish new connection for register action.
-        Connection jcon = new DBConnection().establish();
+        Connection jcon = DBConnection.establish(); 
         jcon.setAutoCommit(false);  // Enable SQL transactions
         
         // Create a prepared statement for MySQL transaction.

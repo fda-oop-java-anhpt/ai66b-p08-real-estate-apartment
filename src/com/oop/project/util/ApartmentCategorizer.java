@@ -8,7 +8,7 @@ import java.util.Map;
  */
 public class ApartmentCategorizer {
     
-    private static final Map<String, String> envMap = new ReadEnv("/com/oop/project/config/Connection.env").load();
+    private static final Map<String, String> envMap = new ReadEnv("/com/oop/project/config/.env").load();
 
     // Threshold constants (adjustable based on business rules)
     private static final double LUXURY_PRICE_MIN = Double.parseDouble(envMap.getOrDefault("LUXURY_PRICE_MIN", "10.0"));   // ≥ 10 billion VND
