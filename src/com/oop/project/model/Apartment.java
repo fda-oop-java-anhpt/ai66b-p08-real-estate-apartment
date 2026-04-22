@@ -2,9 +2,6 @@ package com.oop.project.model;
 
 import java.sql.Timestamp;
 
-/**
- * Plain Old Java Object (POJO) representing an apartment row from the database.
- */
 public class Apartment implements POJO {
     private final int apartmentId;
     private final String address;
@@ -16,11 +13,12 @@ public class Apartment implements POJO {
     private final String status;
     private final Timestamp createdAt;
     private final Timestamp updatedAt;
+    private final String amenities;   // NEW FIELD
 
-    // Full constructor
+    // Full constructor – ADD amenities parameter at the end
     public Apartment(int apartmentId, String address, String city, double price,
                      int bedrooms, double size, String category, String status,
-                     Timestamp createdAt, Timestamp updatedAt) {
+                     Timestamp createdAt, Timestamp updatedAt, String amenities) {
         this.apartmentId = apartmentId;
         this.address = address;
         this.city = city;
@@ -31,6 +29,7 @@ public class Apartment implements POJO {
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.amenities = amenities;    // NEW ASSIGNMENT
     }
 
     // Getters
@@ -77,6 +76,10 @@ public class Apartment implements POJO {
 
     public Timestamp getUpdatedAt() {
         return updatedAt;
+    }
+    
+    public String getAmenities() {
+        return (amenities == null || amenities.trim().isEmpty()) ? "None" : amenities;
     }
     
     @Override
