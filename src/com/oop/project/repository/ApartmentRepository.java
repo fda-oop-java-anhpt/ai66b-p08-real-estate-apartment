@@ -74,7 +74,7 @@ public class ApartmentRepository implements DAO {
 
     // === READ ===
     public Apartment getById(int apartmentId) throws SQLException {
-        String sql = "SELECT a.*, GROUP_CONCAT(am.name SEPARATOR ', ') AS amenities " +
+        String sql = "SELECT a.*, GROUP_CONCAT(am.name ORDER BY am.name SEPARATOR ', ') AS amenities " +
                      "FROM apartment a " +
                      "LEFT JOIN apartmentAmenities aa ON a.apartment_id = aa.apartment_id " +
                      "LEFT JOIN amenities am ON aa.amenity_id = am.amenity_id " +
@@ -94,7 +94,7 @@ public class ApartmentRepository implements DAO {
     }
 
     public List<Apartment> getAll() throws SQLException {
-        String sql = "SELECT a.*, GROUP_CONCAT(am.name SEPARATOR ', ') AS amenities " +
+        String sql = "SELECT a.*, GROUP_CONCAT(am.name ORDER BY am.name SEPARATOR ', ') AS amenities " +
                      "FROM apartment a " +
                      "LEFT JOIN apartmentAmenities aa ON a.apartment_id = aa.apartment_id " +
                      "LEFT JOIN amenities am ON aa.amenity_id = am.amenity_id " +
@@ -187,61 +187,83 @@ public class ApartmentRepository implements DAO {
     public List<Apartment> filter(String city, Double minPrice, Double maxPrice,
                                   Integer minBedrooms, Integer maxBedrooms,
                                   Double minSize, Double maxSize,
-                                  String category, String status) throws SQLException {
+                                  String category, String status,
+                                  List<Integer> amenityIds) throws SQLException {
         StringBuilder sql = new StringBuilder(
-            "SELECT a.*, GROUP_CONCAT(am.name SEPARATOR ', ') AS amenities " +
+            "SELECT a.*, GROUP_CONCAT(am.name ORDER BY am.name SEPARATOR ', ') AS amenities " +
             "FROM apartment a " +
             "LEFT JOIN apartmentAmenities aa ON a.apartment_id = aa.apartment_id " +
-            "LEFT JOIN amenities am ON aa.amenity_id = am.amenity_id " +
-            "WHERE 1=1 "
+            "LEFT JOIN amenities am ON aa.amenity_id = am.amenity_id "
         );
         List<Object> params = new ArrayList<>();
+        List<String> conditions = new ArrayList<>();
 
+        // Build WHERE conditions
         if (city != null && !city.trim().isEmpty()) {
-            sql.append("AND a.city LIKE ? ");
-            params.add("%" + city + "%");
+            conditions.add("a.city LIKE ?");
+            params.add("%" + city.trim() + "%");
         }
         if (minPrice != null) {
-            sql.append("AND a.price >= ? ");
+            conditions.add("a.price >= ?");
             params.add(minPrice);
         }
         if (maxPrice != null) {
-            sql.append("AND a.price <= ? ");
+            conditions.add("a.price <= ?");
             params.add(maxPrice);
         }
         if (minBedrooms != null) {
-            sql.append("AND a.bedrooms >= ? ");
+            conditions.add("a.bedrooms >= ?");
             params.add(minBedrooms);
         }
         if (maxBedrooms != null) {
-            sql.append("AND a.bedrooms <= ? ");
+            conditions.add("a.bedrooms <= ?");
             params.add(maxBedrooms);
         }
         if (minSize != null) {
-            sql.append("AND a.size >= ? ");
+            conditions.add("a.size >= ?");
             params.add(minSize);
         }
         if (maxSize != null) {
-            sql.append("AND a.size <= ? ");
+            conditions.add("a.size <= ?");
             params.add(maxSize);
         }
         if (category != null && !category.trim().isEmpty()) {
-            sql.append("AND a.category = ? ");
-            params.add(category);
+            conditions.add("a.category = ?");
+            params.add(category.trim());
         }
         if (status != null && !status.trim().isEmpty()) {
-            sql.append("AND a.status = ? ");
-            params.add(status);
+            conditions.add("a.status = ?");
+            params.add(status.trim());
         }
 
-        sql.append("GROUP BY a.apartment_id ORDER BY a.price ASC");
+        // Amenity filter: apartment must have at least one of the selected amenities
+        if (amenityIds != null && !amenityIds.isEmpty()) {
+            StringBuilder inClause = new StringBuilder();
+            for (int i = 0; i < amenityIds.size(); i++) {
+                if (i > 0) inClause.append(", ");
+                inClause.append("?");
+                params.add(amenityIds.get(i));
+            }
+            conditions.add("EXISTS (SELECT 1 FROM apartmentAmenities aa2 " +
+                           "WHERE aa2.apartment_id = a.apartment_id " +
+                           "AND aa2.amenity_id IN (" + inClause + "))");
+        }
+
+        // Append WHERE clause if any conditions exist
+        if (!conditions.isEmpty()) {
+            sql.append(" WHERE ").append(String.join(" AND ", conditions));
+        }
+
+        sql.append(" GROUP BY a.apartment_id ORDER BY a.price ASC");
 
         List<Apartment> apartments = new ArrayList<>();
         try (Connection conn = new DBConnection().establish();
              PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+
             for (int i = 0; i < params.size(); i++) {
                 stmt.setObject(i + 1, params.get(i));
             }
+
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     apartments.add(mapRowToApartment(rs));
@@ -253,7 +275,7 @@ public class ApartmentRepository implements DAO {
 
     // === SEARCH ===
     public List<Apartment> search(String keyword) throws SQLException {
-        String sql = "SELECT a.*, GROUP_CONCAT(am.name SEPARATOR ', ') AS amenities " +
+        String sql = "SELECT a.*, GROUP_CONCAT(am.name ORDER BY am.name SEPARATOR ', ') AS amenities " +
                      "FROM apartment a " +
                      "LEFT JOIN apartmentAmenities aa ON a.apartment_id = aa.apartment_id " +
                      "LEFT JOIN amenities am ON aa.amenity_id = am.amenity_id " +
@@ -286,15 +308,18 @@ public class ApartmentRepository implements DAO {
                                     Integer minBedrooms, Integer maxBedrooms,
                                     Double minSize, Double maxSize,
                                     String category, String status,
+                                    List<Integer> amenityIds,
                                     String filePath) throws SQLException, IOException {
         List<Apartment> apartments = filter(city, minPrice, maxPrice, minBedrooms, maxBedrooms,
-                                            minSize, maxSize, category, status);
+                                            minSize, maxSize, category, status, amenityIds);
         exportToCSV(apartments, filePath);
     }
 
     private void exportToCSV(List<Apartment> apartments, String filePath) throws IOException {
         try (FileWriter writer = new FileWriter(filePath)) {
-            writer.append("ID,Address,City,Price (B VND),Bedrooms,Size (m²),Category,Status,Created At,Updated At\n");
+            // Header
+            writer.append("ID,Address,City,Price (B VND),Bedrooms,Size (m²),Category,Status,Amenities,Created At,Updated At\n");
+
             for (Apartment apt : apartments) {
                 writer.append(String.valueOf(apt.getApartmentId())).append(',')
                       .append(escapeCsv(apt.getAddress())).append(',')
@@ -304,6 +329,7 @@ public class ApartmentRepository implements DAO {
                       .append(String.valueOf(apt.getSize())).append(',')
                       .append(apt.getCategory()).append(',')
                       .append(apt.getStatus()).append(',')
+                      .append(escapeCsv(apt.getAmenities())).append(',')
                       .append(apt.getCreatedAt().toString()).append(',')
                       .append(apt.getUpdatedAt().toString()).append('\n');
             }
@@ -311,7 +337,8 @@ public class ApartmentRepository implements DAO {
     }
 
     private String escapeCsv(String value) {
-        if (value.contains(",") || value.contains("\"")) {
+        if (value == null) return "";
+        if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
             return "\"" + value.replace("\"", "\"\"") + "\"";
         }
         return value;
@@ -328,7 +355,8 @@ public class ApartmentRepository implements DAO {
             rs.getString("category"),
             rs.getString("status"),
             rs.getTimestamp("created_at"),
-            rs.getTimestamp("updated_at")
+            rs.getTimestamp("updated_at"),
+            rs.getString("amenities")   // Must be present
         );
     }
 
@@ -359,5 +387,11 @@ public class ApartmentRepository implements DAO {
             }
         }
         return ids;
+    }
+    
+    public Apartment getByIdWithNotes(int apartmentId) throws SQLException {
+        // This would require joining notes and possibly returning a custom object.
+        // For simplicity, we can keep notes separate and fetch them via NoteRepository.
+        return getById(apartmentId);
     }
 }
