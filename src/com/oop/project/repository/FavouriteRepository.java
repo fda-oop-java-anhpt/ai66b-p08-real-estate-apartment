@@ -20,7 +20,7 @@ public class FavouriteRepository implements DAO {
      * Adds an apartment to the current user's favorites.
      *
      * @param apartmentId the apartment ID to favorite
-     * @throws SQLException if already favorited or database error
+     * @throws SQLException if already or database error
      */
     public void add(int apartmentId) throws SQLException {
         String username = SessionManager.getCurrentUsername();
@@ -139,7 +139,7 @@ public class FavouriteRepository implements DAO {
     /**
      * Retrieves all favorite entries (without apartment details) for the current user.
      *
-     * @return list of Favourite objects
+     * @return list of objects
      * @throws SQLException on database error
      */
     public List<Favourite> getMyFavouriteEntries() throws SQLException {
