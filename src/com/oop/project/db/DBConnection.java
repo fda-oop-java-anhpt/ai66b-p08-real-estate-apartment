@@ -28,7 +28,7 @@ public class DBConnection {
     public DBConnection() {}
     
     // This method is to establish a connection.
-    public Connection establish() throws SQLException {
+    public static Connection establish() throws SQLException {
         // return a connection if valid, else SQLException Error.
         return DriverManager.getConnection(URL, USERNAME, PASSWORD);
         }
