@@ -64,6 +64,7 @@ CREATE TABLE universal_log (
     record_id       INT,                      -- primary key of affected row (if applicable)
     username        VARCHAR(255),             -- who performed the action
     role            VARCHAR(255),             -- role at the time of action
+    content         TEXT,                     -- detailed description of the change
     action_time     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (username) REFERENCES users(username)
 );
