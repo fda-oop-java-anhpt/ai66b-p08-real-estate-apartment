@@ -40,4 +40,16 @@ public class ApartmentSearch {
         return repository.filter(city, minPrice, maxPrice, minBedrooms, maxBedrooms,
                 minSize, maxSize, category, status, amenityIds);
     }
+    
+    public List<Apartment> filterFavorites(List<Integer> favoriteIds,
+                                           String city, Double minPrice, Double maxPrice,
+                                           Integer minBedrooms, Integer maxBedrooms,
+                                           Double minSize, Double maxSize,
+                                           String category, String status,
+                                           List<Integer> amenityIds)
+            throws SQLException, SecurityException {
+        requireLogin();
+        return repository.filterByIds(favoriteIds, city, minPrice, maxPrice, minBedrooms, maxBedrooms,
+                minSize, maxSize, category, status, amenityIds);
+    }
 }
