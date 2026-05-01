@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ApartmentTableModel extends AbstractTableModel {
     private final String[] columnNames = {
-        "ID", "Address", "City", "Price (B VND)", "Bedrooms", "Size (m²)", "Category", "Status", "Amenities"
+        "ID", "Address", "City", "Price (B VND)", "Bedrooms", "Size (m²)", "Category", "Status", "Amenities", "Notes", "Fav"
     };
     private List<Apartment> apartments = new ArrayList<>();
     private final ApartmentSearch searchService;
@@ -27,7 +27,7 @@ public class ApartmentTableModel extends AbstractTableModel {
     public void refreshData() {
         try {
             apartments = managementService.getAllApartments();
-            sortById(); // default sort by ID
+            sortById();
             fireTableDataChanged();
         } catch (SQLException | SecurityException e) {
             e.printStackTrace();
@@ -58,10 +58,6 @@ public class ApartmentTableModel extends AbstractTableModel {
         return apartments.get(rowIndex);
     }
 
-    /**
-     * Returns the currently displayed list (after filtering/sorting).
-     * Used for exporting the current view.
-     */
     public List<Apartment> getCurrentList() {
         return new ArrayList<>(apartments);
     }
@@ -73,7 +69,7 @@ public class ApartmentTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return columnNames.length;  // now 9 columns
+        return columnNames.length;  // 11 columns
     }
 
     @Override
@@ -93,14 +89,16 @@ public class ApartmentTableModel extends AbstractTableModel {
             case 5: return String.format("%.1f", apt.getSize());
             case 6: return apt.getCategory();
             case 7: return apt.getStatus();
-            case 8: return apt.getAmenities();   // NEW
+            case 8: return apt.getAmenities();
+            case 9: return "";       // Notes placeholder
+            case 10: return "";      // Fav placeholder
             default: return null;
         }
     }
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return false;
+        return columnIndex == 9 || columnIndex == 10;   // Notes & Fav buttons
     }
 
     @Override
