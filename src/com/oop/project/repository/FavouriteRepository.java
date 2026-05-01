@@ -183,4 +183,19 @@ public class FavouriteRepository implements DAO {
             return true;
         }
     }
+    
+    public List<Integer> getFavoriteApartmentIdsForUser(String username) throws SQLException {
+        List<Integer> ids = new ArrayList<>();
+        String sql = "SELECT apartment_id FROM favourites WHERE username = ?";
+        try (Connection conn = new DBConnection().establish();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, username);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    ids.add(rs.getInt("apartment_id"));
+                }
+            }
+        }
+        return ids;
+    }
 }
