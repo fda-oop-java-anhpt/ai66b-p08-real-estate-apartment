@@ -394,4 +394,71 @@ public class ApartmentRepository implements DAO {
         // For simplicity, we can keep notes separate and fetch them via NoteRepository.
         return getById(apartmentId);
     }
+
+    public List<Apartment> filterByIds(List<Integer> apartmentIds, String city, Double minPrice, Double maxPrice,
+                                       Integer minBedrooms, Integer maxBedrooms,
+                                       Double minSize, Double maxSize,
+                                       String category, String status,
+                                       List<Integer> amenityIds) throws SQLException {
+        if (apartmentIds == null || apartmentIds.isEmpty()) return new ArrayList<>();
+
+        StringBuilder sql = new StringBuilder(
+            "SELECT a.*, GROUP_CONCAT(am.name ORDER BY am.name SEPARATOR ', ') AS amenities " +
+            "FROM apartment a " +
+            "LEFT JOIN apartmentAmenities aa ON a.apartment_id = aa.apartment_id " +
+            "LEFT JOIN amenities am ON aa.amenity_id = am.amenity_id " +
+            "WHERE a.apartment_id IN ("
+        );
+        for (int i = 0; i < apartmentIds.size(); i++) {
+            if (i > 0) sql.append(", ");
+            sql.append("?");
+        }
+        sql.append(") ");
+        List<Object> params = new ArrayList<>(apartmentIds.stream().map(id -> (Object) id).toList());
+        List<String> conditions = new ArrayList<>();
+
+        if (city != null && !city.trim().isEmpty()) {
+            conditions.add("a.city LIKE ?"); params.add("%" + city.trim() + "%");
+        }
+        if (minPrice != null) { conditions.add("a.price >= ?"); params.add(minPrice); }
+        if (maxPrice != null) { conditions.add("a.price <= ?"); params.add(maxPrice); }
+        if (minBedrooms != null) { conditions.add("a.bedrooms >= ?"); params.add(minBedrooms); }
+        if (maxBedrooms != null) { conditions.add("a.bedrooms <= ?"); params.add(maxBedrooms); }
+        if (minSize != null) { conditions.add("a.size >= ?"); params.add(minSize); }
+        if (maxSize != null) { conditions.add("a.size <= ?"); params.add(maxSize); }
+        if (category != null && !category.trim().isEmpty()) {
+            conditions.add("a.category = ?"); params.add(category.trim());
+        }
+        if (status != null && !status.trim().isEmpty()) {
+            conditions.add("a.status = ?"); params.add(status.trim());
+        }
+        if (amenityIds != null && !amenityIds.isEmpty()) {
+            StringBuilder inClause = new StringBuilder();
+            for (int i = 0; i < amenityIds.size(); i++) {
+                if (i > 0) inClause.append(", ");
+                inClause.append("?");
+                params.add(amenityIds.get(i));
+            }
+            conditions.add("EXISTS (SELECT 1 FROM apartmentAmenities aa2 " +
+                           "WHERE aa2.apartment_id = a.apartment_id " +
+                           "AND aa2.amenity_id IN (" + inClause + "))");
+        }
+
+        if (!conditions.isEmpty()) {
+            sql.append(" AND ").append(String.join(" AND ", conditions));
+        }
+        sql.append(" GROUP BY a.apartment_id ORDER BY a.price ASC");
+
+        List<Apartment> apartments = new ArrayList<>();
+        try (Connection conn = new DBConnection().establish();
+             PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                stmt.setObject(i + 1, params.get(i));
+            }
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) apartments.add(mapRowToApartment(rs));
+            }
+        }
+        return apartments;
+    }
 }
