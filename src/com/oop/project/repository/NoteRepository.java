@@ -164,7 +164,7 @@ public class NoteRepository implements DAO {
             }
 
             // Allow if current user is the owner or an admin
-            if (!username.equals(noteOwner) && !SessionManager.isAdmin()) {
+            if (!username.equals(noteOwner)) {
                 throw new SQLException("You do not have permission to edit this note.");
             }
 
@@ -217,7 +217,7 @@ public class NoteRepository implements DAO {
                 }
             }
 
-            if (!username.equals(noteOwner) && !SessionManager.isAdmin()) {
+            if (!username.equals(noteOwner)) {
                 throw new SQLException("You do not have permission to delete this note.");
             }
 
