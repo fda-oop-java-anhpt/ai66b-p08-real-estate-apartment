@@ -20,7 +20,6 @@ public class MainFrame extends JFrame {
 
     private ApartmentPanel apartmentPanel;
     private FavoritesPanel favoritesPanel;
-    private NotesPanel notesPanel;
     private AdminPanel adminPanel;
 
     public MainFrame() {
@@ -63,7 +62,6 @@ public class MainFrame extends JFrame {
 
         apartmentPanel = new ApartmentPanel();
         favoritesPanel = new FavoritesPanel();
-        notesPanel = new NotesPanel();
         adminPanel = new AdminPanel();
     }
 
@@ -87,8 +85,15 @@ public class MainFrame extends JFrame {
         // Tabbed pane
         tabbedPane.addTab("Apartments", apartmentPanel);
         tabbedPane.addTab("Favorites", favoritesPanel);
-        tabbedPane.addTab("Notes", notesPanel);
         add(tabbedPane, BorderLayout.CENTER);
+        
+        tabbedPane.addChangeListener(e -> {
+            int selectedIndex = tabbedPane.getSelectedIndex();
+            // if Favorites tab is selected (index 1)
+            if (selectedIndex == 1) {
+                favoritesPanel.loadFavorites();
+            }
+        });    
     }
 
     private void styleComponents() {
@@ -155,5 +160,18 @@ public class MainFrame extends JFrame {
         SessionManager.clearSession();
         dispose();
         new LoginScreen().setVisible(true);
+    }
+    
+    public void refreshFavoritesTab() {
+        if (favoritesPanel != null) {
+            favoritesPanel.loadFavorites();
+        }
+    }
+    
+    public void refreshMainListingFavorites() {
+        if (apartmentPanel != null) {
+            apartmentPanel.loadFavoriteIds();
+            apartmentPanel.repaint();  // repaint table to update heart icons & golden rows
+        }
     }
 }
