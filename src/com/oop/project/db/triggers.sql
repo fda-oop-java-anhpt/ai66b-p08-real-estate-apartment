@@ -76,169 +76,250 @@ DELIMITER ;
 DELIMITER //
 
 -- ========== APARTMENT TRIGGERS ==========
+-- INSERT
 CREATE TRIGGER log_apartment_insert
 AFTER INSERT ON apartment
 FOR EACH ROW
 BEGIN
     DECLARE user_role VARCHAR(255);
     SELECT role INTO user_role FROM users WHERE username = @current_username;
-    INSERT INTO universal_log (table_name, action_type, record_id, username, role)
-    VALUES ('apartment', 'INSERT', NEW.apartment_id, @current_username, user_role);
+    INSERT INTO universal_log (table_name, action_type, record_id, username, role, content)
+    VALUES ('apartment', 'INSERT', NEW.apartment_id, @current_username, user_role,
+            CONCAT('Created apartment: ', NEW.address, ', ', NEW.city,
+                   ' | Price: ', NEW.price, 'B | Bedrooms: ', NEW.bedrooms,
+                   ' | Size: ', NEW.size, 'm² | Category: ', NEW.category,
+                   ' | Status: ', NEW.status));
 END //
 
+-- UPDATE
 CREATE TRIGGER log_apartment_update
 AFTER UPDATE ON apartment
 FOR EACH ROW
 BEGIN
     DECLARE user_role VARCHAR(255);
+    DECLARE changes TEXT DEFAULT '';
     SELECT role INTO user_role FROM users WHERE username = @current_username;
-    INSERT INTO universal_log (table_name, action_type, record_id, username, role)
-    VALUES ('apartment', 'UPDATE', NEW.apartment_id, @current_username, user_role);
+
+    IF OLD.address <> NEW.address THEN
+        SET changes = CONCAT(changes, 'Address: "', OLD.address, '" → "', NEW.address, '"; ');
+    END IF;
+    IF OLD.city <> NEW.city THEN
+        SET changes = CONCAT(changes, 'City: "', OLD.city, '" → "', NEW.city, '"; ');
+    END IF;
+    IF OLD.price <> NEW.price THEN
+        SET changes = CONCAT(changes, 'Price: ', OLD.price, ' → ', NEW.price, '; ');
+    END IF;
+    IF OLD.bedrooms <> NEW.bedrooms THEN
+        SET changes = CONCAT(changes, 'Bedrooms: ', OLD.bedrooms, ' → ', NEW.bedrooms, '; ');
+    END IF;
+    IF OLD.size <> NEW.size THEN
+        SET changes = CONCAT(changes, 'Size: ', OLD.size, ' → ', NEW.size, '; ');
+    END IF;
+    IF OLD.category <> NEW.category THEN
+        SET changes = CONCAT(changes, 'Category: "', OLD.category, '" → "', NEW.category, '"; ');
+    END IF;
+    IF OLD.status <> NEW.status THEN
+        SET changes = CONCAT(changes, 'Status: "', OLD.status, '" → "', NEW.status, '"; ');
+    END IF;
+
+    IF changes = '' THEN
+        SET changes = 'No changes detected (updated_at only).';
+    END IF;
+
+    INSERT INTO universal_log (table_name, action_type, record_id, username, role, content)
+    VALUES ('apartment', 'UPDATE', NEW.apartment_id, @current_username, user_role,
+            CONCAT('Updated apartment #', NEW.apartment_id, ' | ', changes));
 END //
 
+-- DELETE
 CREATE TRIGGER log_apartment_delete
 AFTER DELETE ON apartment
 FOR EACH ROW
 BEGIN
     DECLARE user_role VARCHAR(255);
     SELECT role INTO user_role FROM users WHERE username = @current_username;
-    INSERT INTO universal_log (table_name, action_type, record_id, username, role)
-    VALUES ('apartment', 'DELETE', OLD.apartment_id, @current_username, user_role);
+    INSERT INTO universal_log (table_name, action_type, record_id, username, role, content)
+    VALUES ('apartment', 'DELETE', OLD.apartment_id, @current_username, user_role,
+            CONCAT('Deleted apartment: ', OLD.address, ', ', OLD.city,
+                   ' | Price: ', OLD.price, 'B | Bedrooms: ', OLD.bedrooms));
 END //
 
 -- ========== USERS TRIGGERS ==========
+-- INSERT
 CREATE TRIGGER log_users_insert
 AFTER INSERT ON users
 FOR EACH ROW
 BEGIN
     DECLARE user_role VARCHAR(255);
     SELECT role INTO user_role FROM users WHERE username = @current_username;
-    INSERT INTO universal_log (table_name, action_type, record_id, username, role)
-    VALUES ('users', 'INSERT', NULL, @current_username, user_role);
+    INSERT INTO universal_log (table_name, action_type, record_id, username, role, content)
+    VALUES ('users', 'INSERT', NULL, @current_username, user_role,
+            CONCAT('Created user: "', NEW.username, '" with role "', NEW.role, '"'));
 END //
 
+-- UPDATE
 CREATE TRIGGER log_users_update
 AFTER UPDATE ON users
 FOR EACH ROW
 BEGIN
     DECLARE user_role VARCHAR(255);
+    DECLARE changes TEXT DEFAULT '';
     SELECT role INTO user_role FROM users WHERE username = @current_username;
-    INSERT INTO universal_log (table_name, action_type, record_id, username, role)
-    VALUES ('users', 'UPDATE', NULL, @current_username, user_role);
+
+    IF OLD.role <> NEW.role THEN
+        SET changes = CONCAT(changes, 'Role: "', OLD.role, '" → "', NEW.role, '"; ');
+    END IF;
+    IF OLD.password_hash <> NEW.password_hash THEN
+        SET changes = CONCAT(changes, 'Password changed; ');
+    END IF;
+
+    IF changes = '' THEN
+        SET changes = 'No changes (likely last_login update).';
+    END IF;
+
+    INSERT INTO universal_log (table_name, action_type, record_id, username, role, content)
+    VALUES ('users', 'UPDATE', NULL, @current_username, user_role,
+            CONCAT('Updated user "', NEW.username, '" | ', changes));
 END //
 
+-- DELETE
 CREATE TRIGGER log_users_delete
 AFTER DELETE ON users
 FOR EACH ROW
 BEGIN
     DECLARE user_role VARCHAR(255);
     SELECT role INTO user_role FROM users WHERE username = @current_username;
-    INSERT INTO universal_log (table_name, action_type, record_id, username, role)
-    VALUES ('users', 'DELETE', NULL, @current_username, user_role);
+    INSERT INTO universal_log (table_name, action_type, record_id, username, role, content)
+    VALUES ('users', 'DELETE', NULL, @current_username, user_role,
+            CONCAT('Deleted user "', OLD.username, '" (role: ', OLD.role, ')'));
 END //
 
 -- ========== NOTES TRIGGERS ==========
+-- INSERT
 CREATE TRIGGER log_notes_insert
 AFTER INSERT ON notes
 FOR EACH ROW
 BEGIN
     DECLARE user_role VARCHAR(255);
     SELECT role INTO user_role FROM users WHERE username = @current_username;
-    INSERT INTO universal_log (table_name, action_type, record_id, username, role)
-    VALUES ('notes', 'INSERT', NEW.note_id, @current_username, user_role);
+    INSERT INTO universal_log (table_name, action_type, record_id, username, role, content)
+    VALUES ('notes', 'INSERT', NEW.note_id, @current_username, user_role,
+            CONCAT('Added note to apartment #', NEW.apartment_id, ': "', NEW.content, '"'));
 END //
 
+-- UPDATE
 CREATE TRIGGER log_notes_update
 AFTER UPDATE ON notes
 FOR EACH ROW
 BEGIN
     DECLARE user_role VARCHAR(255);
     SELECT role INTO user_role FROM users WHERE username = @current_username;
-    INSERT INTO universal_log (table_name, action_type, record_id, username, role)
-    VALUES ('notes', 'UPDATE', NEW.note_id, @current_username, user_role);
+    INSERT INTO universal_log (table_name, action_type, record_id, username, role, content)
+    VALUES ('notes', 'UPDATE', NEW.note_id, @current_username, user_role,
+            CONCAT('Updated note #', NEW.note_id, ' (apartment #', NEW.apartment_id,
+                   '): "', OLD.content, '" → "', NEW.content, '"'));
 END //
 
+-- DELETE
 CREATE TRIGGER log_notes_delete
 AFTER DELETE ON notes
 FOR EACH ROW
 BEGIN
     DECLARE user_role VARCHAR(255);
     SELECT role INTO user_role FROM users WHERE username = @current_username;
-    INSERT INTO universal_log (table_name, action_type, record_id, username, role)
-    VALUES ('notes', 'DELETE', OLD.note_id, @current_username, user_role);
+    INSERT INTO universal_log (table_name, action_type, record_id, username, role, content)
+    VALUES ('notes', 'DELETE', OLD.note_id, @current_username, user_role,
+            CONCAT('Deleted note #', OLD.note_id, ' from apartment #', OLD.apartment_id,
+                   ': "', OLD.content, '"'));
 END //
 
 -- ========== FAVOURITES TRIGGERS ==========
+-- INSERT
 CREATE TRIGGER log_favourites_insert
 AFTER INSERT ON favourites
 FOR EACH ROW
 BEGIN
     DECLARE user_role VARCHAR(255);
     SELECT role INTO user_role FROM users WHERE username = @current_username;
-    INSERT INTO universal_log (table_name, action_type, record_id, username, role)
-    VALUES ('favourites', 'INSERT', NULL, @current_username, user_role);
+    INSERT INTO universal_log (table_name, action_type, record_id, username, role, content)
+    VALUES ('favourites', 'INSERT', NULL, @current_username, user_role,
+            CONCAT('User "', NEW.username, '" favorited apartment #', NEW.apartment_id));
 END //
 
+-- DELETE
 CREATE TRIGGER log_favourites_delete
 AFTER DELETE ON favourites
 FOR EACH ROW
 BEGIN
     DECLARE user_role VARCHAR(255);
     SELECT role INTO user_role FROM users WHERE username = @current_username;
-    INSERT INTO universal_log (table_name, action_type, record_id, username, role)
-    VALUES ('favourites', 'DELETE', NULL, @current_username, user_role);
+    INSERT INTO universal_log (table_name, action_type, record_id, username, role, content)
+    VALUES ('favourites', 'DELETE', NULL, @current_username, user_role,
+            CONCAT('User "', OLD.username, '" unfavorited apartment #', OLD.apartment_id));
 END //
 
 -- ========== AMENITIES TRIGGERS ==========
+-- INSERT
 CREATE TRIGGER log_amenities_insert
 AFTER INSERT ON amenities
 FOR EACH ROW
 BEGIN
     DECLARE user_role VARCHAR(255);
     SELECT role INTO user_role FROM users WHERE username = @current_username;
-    INSERT INTO universal_log (table_name, action_type, record_id, username, role)
-    VALUES ('amenities', 'INSERT', NEW.amenity_id, @current_username, user_role);
+    INSERT INTO universal_log (table_name, action_type, record_id, username, role, content)
+    VALUES ('amenities', 'INSERT', NEW.amenity_id, @current_username, user_role,
+            CONCAT('Created amenity: "', NEW.name, '"'));
 END //
 
+-- UPDATE
 CREATE TRIGGER log_amenities_update
 AFTER UPDATE ON amenities
 FOR EACH ROW
 BEGIN
     DECLARE user_role VARCHAR(255);
     SELECT role INTO user_role FROM users WHERE username = @current_username;
-    INSERT INTO universal_log (table_name, action_type, record_id, username, role)
-    VALUES ('amenities', 'UPDATE', NEW.amenity_id, @current_username, user_role);
+    INSERT INTO universal_log (table_name, action_type, record_id, username, role, content)
+    VALUES ('amenities', 'UPDATE', NEW.amenity_id, @current_username, user_role,
+            CONCAT('Renamed amenity #', NEW.amenity_id, ': "', OLD.name, '" → "', NEW.name, '"'));
 END //
 
+-- DELETE
 CREATE TRIGGER log_amenities_delete
 AFTER DELETE ON amenities
 FOR EACH ROW
 BEGIN
     DECLARE user_role VARCHAR(255);
     SELECT role INTO user_role FROM users WHERE username = @current_username;
-    INSERT INTO universal_log (table_name, action_type, record_id, username, role)
-    VALUES ('amenities', 'DELETE', OLD.amenity_id, @current_username, user_role);
+    INSERT INTO universal_log (table_name, action_type, record_id, username, role, content)
+    VALUES ('amenities', 'DELETE', OLD.amenity_id, @current_username, user_role,
+            CONCAT('Deleted amenity "', OLD.name, '" (ID: ', OLD.amenity_id, ')'));
 END //
 
 -- ========== APARTMENT_AMENITIES TRIGGERS ==========
+-- INSERT
 CREATE TRIGGER log_apartmentamenities_insert
 AFTER INSERT ON apartmentAmenities
 FOR EACH ROW
 BEGIN
     DECLARE user_role VARCHAR(255);
+    DECLARE amenity_name VARCHAR(255);
     SELECT role INTO user_role FROM users WHERE username = @current_username;
-    INSERT INTO universal_log (table_name, action_type, record_id, username, role)
-    VALUES ('apartmentAmenities', 'INSERT', NULL, @current_username, user_role);
+    SELECT name INTO amenity_name FROM amenities WHERE amenity_id = NEW.amenity_id;
+    INSERT INTO universal_log (table_name, action_type, record_id, username, role, content)
+    VALUES ('apartmentAmenities', 'INSERT', NULL, @current_username, user_role,
+            CONCAT('Added amenity "', amenity_name, '" to apartment #', NEW.apartment_id));
 END //
 
+-- DELETE
 CREATE TRIGGER log_apartmentamenities_delete
 AFTER DELETE ON apartmentAmenities
 FOR EACH ROW
 BEGIN
     DECLARE user_role VARCHAR(255);
+    DECLARE amenity_name VARCHAR(255);
     SELECT role INTO user_role FROM users WHERE username = @current_username;
-    INSERT INTO universal_log (table_name, action_type, record_id, username, role)
-    VALUES ('apartmentAmenities', 'DELETE', NULL, @current_username, user_role);
+    SELECT name INTO amenity_name FROM amenities WHERE amenity_id = OLD.amenity_id;
+    INSERT INTO universal_log (table_name, action_type, record_id, username, role, content)
+    VALUES ('apartmentAmenities', 'DELETE', NULL, @current_username, user_role,
+            CONCAT('Removed amenity "', amenity_name, '" from apartment #', OLD.apartment_id));
 END //
-
-DELIMITER ;
