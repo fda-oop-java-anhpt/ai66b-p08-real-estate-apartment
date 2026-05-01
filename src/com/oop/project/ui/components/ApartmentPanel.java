@@ -3,8 +3,10 @@ package com.oop.project.ui.components;
 import com.oop.project.model.Apartment;
 import com.oop.project.service.ApartmentExport;
 import com.oop.project.service.ApartmentManagement;
+import com.oop.project.service.FavouriteService;
 import com.oop.project.ui.Theme;
 import com.oop.project.util.SessionManager;
+import com.oop.project.ui.MainFrame;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -18,9 +20,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
+import javax.swing.Timer;
 
 public class ApartmentPanel extends JPanel {
     private ApartmentTableModel tableModel;
@@ -34,9 +36,11 @@ public class ApartmentPanel extends JPanel {
     private JButton selectAmenitiesButton;
     private JLabel selectedAmenitiesLabel;
     private List<Integer> selectedAmenityIds = new ArrayList<>();
-
-    // Timer to throttle row height adjustments during column resizing
     private Timer resizeTimer;
+
+    // Favorites
+    private Set<Integer> favoriteApartmentIds = new HashSet<>();
+    private FavouriteService favouriteService = new FavouriteService();
 
     public ApartmentPanel() {
         aptService = new ApartmentManagement();
@@ -47,34 +51,39 @@ public class ApartmentPanel extends JPanel {
         layoutComponents();
         setupFilterListeners();
         applyRoleBasedVisibility();
+        loadFavoriteIds();
         refreshTable();
+    }
+
+    // CHANGED: public visibility
+    public void loadFavoriteIds() {
+        try {
+            favoriteApartmentIds.clear();
+            favoriteApartmentIds.addAll(favouriteService.getMyFavoriteIds());
+            apartmentTable.repaint();  // ensure hearts update immediately
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void initComponents() {
         tableModel = new ApartmentTableModel();
 
-        // Create table with overridden prepareRenderer for dynamic row heights
         apartmentTable = new JTable(tableModel) {
             @Override
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component comp = super.prepareRenderer(renderer, row, column);
-                if (column == 8) {
-                    int currentHeight = getRowHeight(row);
-                    if (comp instanceof JTextArea) {
-                        JTextArea textArea = (JTextArea) comp;
-                        int columnWidth = getColumnModel().getColumn(column).getWidth();
-                        textArea.setSize(new Dimension(columnWidth, Integer.MAX_VALUE));
-                        int preferredHeight = textArea.getPreferredSize().height + 10;
-                        if (currentHeight != preferredHeight) {
-                            setRowHeight(row, preferredHeight);
-                        }
-                    }
+                if (column == 8 && comp instanceof JTextArea) {
+                    JTextArea textArea = (JTextArea) comp;
+                    int colWidth = getColumnModel().getColumn(column).getWidth();
+                    textArea.setSize(new Dimension(colWidth, Integer.MAX_VALUE));
+                    int prefHeight = textArea.getPreferredSize().height + 10;
+                    if (getRowHeight(row) != prefHeight) setRowHeight(row, prefHeight);
                 }
                 return comp;
             }
         };
 
-        // Table appearance
         apartmentTable.setFont(Theme.BODY_FONT);
         apartmentTable.getTableHeader().setFont(Theme.TITLE_FONT);
         apartmentTable.getTableHeader().setBackground(Theme.SURFACE);
@@ -83,14 +92,12 @@ public class ApartmentPanel extends JPanel {
         apartmentTable.setShowGrid(false);
         apartmentTable.setIntercellSpacing(new Dimension(0, 0));
         apartmentTable.setFillsViewportHeight(true);
-        apartmentTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); // We'll handle initial sizing manually
+        apartmentTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        // Sorting
         sorter = new TableRowSorter<>(tableModel);
         apartmentTable.setRowSorter(sorter);
         sorter.setSortKeys(List.of(new RowSorter.SortKey(0, SortOrder.ASCENDING)));
 
-        // Initial preferred widths (will be overridden proportionally when viewport is ready)
         apartmentTable.getColumnModel().getColumn(0).setPreferredWidth(50);
         apartmentTable.getColumnModel().getColumn(1).setPreferredWidth(200);
         apartmentTable.getColumnModel().getColumn(2).setPreferredWidth(120);
@@ -100,40 +107,37 @@ public class ApartmentPanel extends JPanel {
         apartmentTable.getColumnModel().getColumn(6).setPreferredWidth(90);
         apartmentTable.getColumnModel().getColumn(7).setPreferredWidth(80);
         apartmentTable.getColumnModel().getColumn(8).setPreferredWidth(200);
+        apartmentTable.getColumnModel().getColumn(9).setPreferredWidth(80);
+        apartmentTable.getColumnModel().getColumn(10).setPreferredWidth(60);
 
-        // Throttled column resize listener to prevent glitching
         resizeTimer = new Timer(150, e -> adjustAllRowHeights());
         resizeTimer.setRepeats(false);
-
         apartmentTable.getColumnModel().addColumnModelListener(new javax.swing.event.TableColumnModelListener() {
-            @Override
-            public void columnMarginChanged(javax.swing.event.ChangeEvent e) {
-                // Restart timer on each margin change; row heights adjust only after resizing stops
-                resizeTimer.restart();
-            }
+            @Override public void columnMarginChanged(javax.swing.event.ChangeEvent e) { resizeTimer.restart(); }
             @Override public void columnAdded(javax.swing.event.TableColumnModelEvent e) {}
             @Override public void columnRemoved(javax.swing.event.TableColumnModelEvent e) {}
             @Override public void columnMoved(javax.swing.event.TableColumnModelEvent e) {}
             @Override public void columnSelectionChanged(javax.swing.event.ListSelectionEvent e) {}
         });
 
-        // Apply styled renderer to all columns except amenities
-        StyledTableCellRenderer styledRenderer = new StyledTableCellRenderer();
+        // Renderers
         for (int i = 0; i < apartmentTable.getColumnCount(); i++) {
-            if (i != 8) {
-                apartmentTable.getColumnModel().getColumn(i).setCellRenderer(styledRenderer);
+            if (i == 8) {
+                apartmentTable.getColumnModel().getColumn(i).setCellRenderer(new AmenityCellRenderer());
+            } else if (i == 9) {
+                apartmentTable.getColumnModel().getColumn(i).setCellRenderer(new NotesButtonRenderer());
+                apartmentTable.getColumnModel().getColumn(i).setCellEditor(new NotesButtonEditor());
+            } else if (i == 10) {
+                apartmentTable.getColumnModel().getColumn(i).setCellRenderer(new FavButtonRenderer());
+                apartmentTable.getColumnModel().getColumn(i).setCellEditor(new FavButtonEditor());
+            } else {
+                apartmentTable.getColumnModel().getColumn(i).setCellRenderer(new StyledTableCellRenderer());
             }
         }
 
-        // Apply wrapping renderer to amenities column
-        apartmentTable.getColumnModel().getColumn(8).setCellRenderer(new AmenityCellRenderer());
-
-        // Header border
         apartmentTable.getTableHeader().setBorder(
-                BorderFactory.createMatteBorder(0, 0, 2, 0, Theme.PRIMARY)
-        );
+                BorderFactory.createMatteBorder(0, 0, 2, 0, Theme.PRIMARY));
 
-        // Buttons
         addButton = new StyledButton("Add", Theme.PRIMARY);
         editButton = new StyledButton("Edit", Theme.ACCENT);
         deleteButton = new StyledButton("Delete", Theme.DANGER);
@@ -150,7 +154,6 @@ public class ApartmentPanel extends JPanel {
         selectedAmenitiesLabel.setFont(Theme.SMALL_FONT);
         selectedAmenitiesLabel.setForeground(Theme.TEXT_SECONDARY);
 
-        // Filter fields
         searchCityField = createFilterField(12);
         minPriceField = createFilterField(6);
         maxPriceField = createFilterField(6);
@@ -164,13 +167,13 @@ public class ApartmentPanel extends JPanel {
         styleComboBox(statusCombo);
     }
 
+    // ── Filter fields ──
     private JTextField createFilterField(int columns) {
         JTextField field = new JTextField(columns);
         field.setFont(Theme.SMALL_FONT);
         field.setBorder(BorderFactory.createCompoundBorder(
                 new LineBorder(new Color(180, 180, 180), 1, true),
-                new EmptyBorder(4, 8, 4, 8)
-        ));
+                new EmptyBorder(4, 8, 4, 8)));
         return field;
     }
 
@@ -181,13 +184,11 @@ public class ApartmentPanel extends JPanel {
     }
 
     private void layoutComponents() {
-        // Filter panel
         JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 10));
         filterPanel.setBackground(new Color(240, 245, 250));
         filterPanel.setBorder(BorderFactory.createCompoundBorder(
                 new EmptyBorder(12, 12, 12, 12),
-                BorderFactory.createLineBorder(new Color(200, 210, 220), 1)
-        ));
+                BorderFactory.createLineBorder(new Color(200, 210, 220), 1)));
 
         filterPanel.add(createFilterLabel("City:"));
         filterPanel.add(searchCityField);
@@ -211,7 +212,6 @@ public class ApartmentPanel extends JPanel {
         filterPanel.add(selectAmenitiesButton);
         filterPanel.add(selectedAmenitiesLabel);
 
-        // Button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
         buttonPanel.setBackground(new Color(230, 238, 245));
         buttonPanel.setBorder(new EmptyBorder(8, 15, 15, 15));
@@ -226,14 +226,12 @@ public class ApartmentPanel extends JPanel {
         topPanel.add(buttonPanel, BorderLayout.SOUTH);
         add(topPanel, BorderLayout.NORTH);
 
-        // Table scroll pane
         JScrollPane scrollPane = new JScrollPane(apartmentTable);
         scrollPane.setBorder(new EmptyBorder(0, 15, 15, 15));
         scrollPane.getViewport().setBackground(Theme.SURFACE);
         scrollPane.setBackground(Theme.SURFACE);
         add(scrollPane, BorderLayout.CENTER);
 
-        // --- Initial proportional column sizing when viewport is ready ---
         scrollPane.addComponentListener(new ComponentAdapter() {
             private boolean initialSizingDone = false;
             @Override
@@ -244,25 +242,6 @@ public class ApartmentPanel extends JPanel {
                 }
             }
         });
-    }
-
-    /**
-     * Distributes the available width among columns proportionally based on their preferred widths.
-     */
-    private void setProportionalColumnWidths(int totalWidth) {
-        if (totalWidth <= 0) return;
-        int totalPreferred = 0;
-        for (int i = 0; i < apartmentTable.getColumnCount(); i++) {
-            totalPreferred += apartmentTable.getColumnModel().getColumn(i).getPreferredWidth();
-        }
-        if (totalPreferred == 0) return;
-
-        for (int i = 0; i < apartmentTable.getColumnCount(); i++) {
-            int preferred = apartmentTable.getColumnModel().getColumn(i).getPreferredWidth();
-            int proportionalWidth = (int) ((long) preferred * totalWidth / totalPreferred);
-            apartmentTable.getColumnModel().getColumn(i).setPreferredWidth(proportionalWidth);
-        }
-        adjustAllRowHeights(); // Adjust row heights after setting initial widths
     }
 
     private JLabel createFilterLabel(String text) {
@@ -278,7 +257,6 @@ public class ApartmentPanel extends JPanel {
             public void removeUpdate(DocumentEvent e) { applyFilter(); }
             public void insertUpdate(DocumentEvent e) { applyFilter(); }
         };
-
         searchCityField.getDocument().addDocumentListener(docListener);
         minPriceField.getDocument().addDocumentListener(docListener);
         maxPriceField.getDocument().addDocumentListener(docListener);
@@ -286,7 +264,6 @@ public class ApartmentPanel extends JPanel {
         maxBedField.getDocument().addDocumentListener(docListener);
         minSizeField.getDocument().addDocumentListener(docListener);
         maxSizeField.getDocument().addDocumentListener(docListener);
-
         categoryCombo.addItemListener(e -> { if (e.getStateChange() == ItemEvent.SELECTED) applyFilter(); });
         statusCombo.addItemListener(e -> { if (e.getStateChange() == ItemEvent.SELECTED) applyFilter(); });
     }
@@ -303,11 +280,8 @@ public class ApartmentPanel extends JPanel {
         String status = Objects.equals(statusCombo.getSelectedItem(), "All") ? null : (String) statusCombo.getSelectedItem();
 
         tableModel.filter(city.isEmpty() ? null : city,
-                minPrice, maxPrice,
-                minBeds, maxBeds,
-                minSize, maxSize,
-                category, status,
-                selectedAmenityIds.isEmpty() ? null : selectedAmenityIds);
+                minPrice, maxPrice, minBeds, maxBeds, minSize, maxSize,
+                category, status, selectedAmenityIds.isEmpty() ? null : selectedAmenityIds);
         sorter.setSortKeys(List.of(new RowSorter.SortKey(0, SortOrder.ASCENDING)));
         adjustAllRowHeights();
     }
@@ -315,7 +289,6 @@ public class ApartmentPanel extends JPanel {
     private Double parseDouble(String s) {
         try { return s.isEmpty() ? null : Double.parseDouble(s); } catch (NumberFormatException e) { return null; }
     }
-
     private Integer parseInteger(String s) {
         try { return s.isEmpty() ? null : Integer.parseInt(s); } catch (NumberFormatException e) { return null; }
     }
@@ -428,7 +401,6 @@ public class ApartmentPanel extends JPanel {
         int amenitiesColumnIndex = 8;
         int columnWidth = apartmentTable.getColumnModel().getColumn(amenitiesColumnIndex).getWidth();
         if (columnWidth <= 0) return;
-
         for (int row = 0; row < apartmentTable.getRowCount(); row++) {
             Object value = apartmentTable.getValueAt(row, amenitiesColumnIndex);
             JTextArea textArea = new JTextArea(value != null ? value.toString() : "");
@@ -439,11 +411,22 @@ public class ApartmentPanel extends JPanel {
         }
     }
 
-    // Custom renderers
-    private static class StyledTableCellRenderer extends DefaultTableCellRenderer {
-        private final Color evenRowColor = Theme.SURFACE;
-        private final Color oddRowColor = new Color(245, 248, 250);
+    private void setProportionalColumnWidths(int totalWidth) {
+        if (totalWidth <= 0) return;
+        int totalPreferred = 0;
+        for (int i = 0; i < apartmentTable.getColumnCount(); i++) {
+            totalPreferred += apartmentTable.getColumnModel().getColumn(i).getPreferredWidth();
+        }
+        if (totalPreferred == 0) return;
+        for (int i = 0; i < apartmentTable.getColumnCount(); i++) {
+            int preferred = apartmentTable.getColumnModel().getColumn(i).getPreferredWidth();
+            int proportionalWidth = (int) ((long) preferred * totalWidth / totalPreferred);
+            apartmentTable.getColumnModel().getColumn(i).setPreferredWidth(proportionalWidth);
+        }
+        adjustAllRowHeights();
+    }
 
+    private class StyledTableCellRenderer extends DefaultTableCellRenderer {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
                                                        boolean isSelected, boolean hasFocus,
@@ -451,18 +434,26 @@ public class ApartmentPanel extends JPanel {
             super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             setHorizontalAlignment(SwingConstants.LEFT);
             setBorder(new EmptyBorder(0, 12, 0, 12));
+
+            int modelRow = table.convertRowIndexToModel(row);
+            int aptId = (int) table.getModel().getValueAt(modelRow, 0);
+            boolean isFav = favoriteApartmentIds.contains(aptId);
+
             if (isSelected) {
-                setBackground(Theme.PRIMARY);
-                setForeground(Color.WHITE);
+                setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(Theme.PRIMARY, 2),
+                        new EmptyBorder(0, 12, 0, 12)));
+                setBackground(isFav ? new Color(255, 255, 210) : (row % 2 == 0 ? Theme.SURFACE : new Color(245, 248, 250)));
+                setForeground(Theme.TEXT_PRIMARY);
             } else {
-                setBackground(row % 2 == 0 ? evenRowColor : oddRowColor);
+                setBackground(isFav ? new Color(255, 255, 210) : (row % 2 == 0 ? Theme.SURFACE : new Color(245, 248, 250)));
                 setForeground(Theme.TEXT_PRIMARY);
             }
             return this;
         }
     }
 
-    private static class AmenityCellRenderer extends JTextArea implements TableCellRenderer {
+    private class AmenityCellRenderer extends JTextArea implements TableCellRenderer {
         private final Color evenRowColor = Theme.SURFACE;
         private final Color oddRowColor = new Color(245, 248, 250);
 
@@ -474,25 +465,143 @@ public class ApartmentPanel extends JPanel {
             setBorder(new EmptyBorder(6, 12, 6, 12));
         }
 
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                                                           boolean isSelected, boolean hasFocus,
+                                                           int row, int column) {
+                setText(value != null ? value.toString() : "");
+                int modelRow = table.convertRowIndexToModel(row);
+                int aptId = (int) table.getModel().getValueAt(modelRow, 0);
+                boolean isFav = favoriteApartmentIds.contains(aptId);
+
+                if (isSelected) {
+                    setBorder(BorderFactory.createCompoundBorder(
+                            BorderFactory.createLineBorder(Theme.PRIMARY, 2),
+                            new EmptyBorder(6, 12, 6, 12)));
+                } else {
+                    setBorder(new EmptyBorder(6, 12, 6, 12));
+                }
+                setBackground(isFav ? new Color(255, 255, 210) : (row % 2 == 0 ? Theme.SURFACE : new Color(245, 248, 250)));
+                setForeground(Theme.TEXT_PRIMARY);
+                
+            int colWidth = table.getColumnModel().getColumn(column).getWidth();
+            setSize(new Dimension(colWidth, Integer.MAX_VALUE));
+            int prefHeight = getPreferredSize().height;
+            if (table.getRowHeight(row) < prefHeight) table.setRowHeight(row, prefHeight);
+            return this;
+        }
+    }
+
+    private class NotesButtonRenderer extends JButton implements TableCellRenderer {
+        public NotesButtonRenderer() {
+            setOpaque(true);
+            setBorderPainted(false);
+            setContentAreaFilled(true);
+            setFocusPainted(false);
+            setFont(Theme.SMALL_FONT.deriveFont(Font.BOLD));
+            setHorizontalTextPosition(SwingConstants.CENTER);
+        }
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
                                                        boolean isSelected, boolean hasFocus,
                                                        int row, int column) {
-            setText(value != null ? value.toString() : "");
+           setText("Notes");
+           if (isSelected) {
+               setBorder(BorderFactory.createLineBorder(Theme.PRIMARY, 2));
+           } else {
+               setBorder(null);
+           }
+           setBackground(row % 2 == 0 ? Theme.SURFACE : new Color(245, 248, 250));
+           setForeground(Theme.PRIMARY);
+           return this;
+       }
+    }
+
+    private class NotesButtonEditor extends DefaultCellEditor {
+        private int selectedRow;
+        public NotesButtonEditor() {
+            super(new JTextField());
+            setClickCountToStart(1);
+        }
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value,
+                                                     boolean isSelected, int row, int column) {
+            selectedRow = row;
+            JButton btn = new JButton("Notes");
+            btn.addActionListener(e -> {
+                int modelRow = apartmentTable.convertRowIndexToModel(selectedRow);
+                int aptId = (int) tableModel.getValueAt(modelRow, 0);
+                Frame owner = (Frame) SwingUtilities.getWindowAncestor(ApartmentPanel.this);
+                new NotesDialog(owner, aptId).setVisible(true);
+                fireEditingStopped();
+            });
+            return btn;
+        }
+        @Override
+        public Object getCellEditorValue() { return ""; }
+    }
+
+    private class FavButtonRenderer extends JButton implements TableCellRenderer {
+        public FavButtonRenderer() {
+            setOpaque(true);
+            setBorderPainted(false);
+            setContentAreaFilled(true);
+            setFocusPainted(false);
+            setFont(Theme.SMALL_FONT.deriveFont(Font.BOLD));
+            setHorizontalTextPosition(SwingConstants.CENTER);
+        }
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                                                       boolean isSelected, boolean hasFocus,
+                                                       int row, int column) {
+            int modelRow = table.convertRowIndexToModel(row);
+            int aptId = (int) table.getModel().getValueAt(modelRow, 0);
+            boolean isFav = favoriteApartmentIds.contains(aptId);
+            setText(isFav ? "\u2665" : "\u2661");
             if (isSelected) {
-                setBackground(Theme.PRIMARY);
-                setForeground(Color.WHITE);
+                setBorder(BorderFactory.createLineBorder(Theme.PRIMARY, 2));
             } else {
-                setBackground(row % 2 == 0 ? evenRowColor : oddRowColor);
-                setForeground(Theme.TEXT_PRIMARY);
+                setBorder(null);
             }
-            int columnWidth = table.getColumnModel().getColumn(column).getWidth();
-            setSize(new Dimension(columnWidth, Integer.MAX_VALUE));
-            int preferredHeight = getPreferredSize().height;
-            if (table.getRowHeight(row) < preferredHeight) {
-                table.setRowHeight(row, preferredHeight);
-            }
+            setBackground(row % 2 == 0 ? Theme.SURFACE : new Color(245, 248, 250));
+            setForeground(isFav ? new Color(200, 0, 0) : Theme.TEXT_SECONDARY);
             return this;
         }
+    }
+
+    private class FavButtonEditor extends DefaultCellEditor {
+        private int selectedRow;
+        public FavButtonEditor() {
+            super(new JTextField());
+            setClickCountToStart(1);
+        }
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value,
+                                                     boolean isSelected, int row, int column) {
+            selectedRow = row;
+            JButton btn = new JButton();
+            btn.addActionListener(e -> {
+                int modelRow = apartmentTable.convertRowIndexToModel(selectedRow);
+                int aptId = (int) tableModel.getValueAt(modelRow, 0);
+                try {
+                    boolean nowFav = favouriteService.toggle(aptId);
+                    if (nowFav) favoriteApartmentIds.add(aptId);
+                    else favoriteApartmentIds.remove(aptId);
+                    apartmentTable.repaint();
+                    Window window = SwingUtilities.getWindowAncestor(ApartmentPanel.this);
+                    if (window instanceof MainFrame) {
+                        ((MainFrame) window).refreshFavoritesTab();
+                    }
+                    
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(ApartmentPanel.this,
+                            "Error toggling favorite: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                fireEditingStopped();
+            });
+            return btn;
+        }
+        @Override
+        public Object getCellEditorValue() { return ""; }
     }
 }
