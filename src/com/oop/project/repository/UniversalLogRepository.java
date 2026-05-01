@@ -19,7 +19,7 @@ public class UniversalLogRepository implements DAO {
      * Retrieves a log entry by its ID.
      */
     public UniversalLog getById(int logId) throws SQLException {
-        String sql = "SELECT log_id, table_name, action_type, record_id, username, role, action_time " +
+        String sql = "SELECT log_id, table_name, action_type, record_id, username, role, content, action_time " +
                 "FROM universal_log WHERE log_id = ?";
         try (Connection conn = new DBConnection().establish();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -37,7 +37,7 @@ public class UniversalLogRepository implements DAO {
      * Retrieves all log entries, ordered by most recent first.
      */
     public List<UniversalLog> getAll() throws SQLException {
-        String sql = "SELECT log_id, table_name, action_type, record_id, username, role, action_time " +
+        String sql = "SELECT log_id, table_name, action_type, record_id, username, role, content, action_time " +
                 "FROM universal_log ORDER BY action_time DESC";
         List<UniversalLog> logs = new ArrayList<>();
         try (Connection conn = new DBConnection().establish();
@@ -54,7 +54,7 @@ public class UniversalLogRepository implements DAO {
      * Retrieves logs filtered by username.
      */
     public List<UniversalLog> getByUsername(String username) throws SQLException {
-        String sql = "SELECT log_id, table_name, action_type, record_id, username, role, action_time " +
+        String sql = "SELECT log_id, table_name, action_type, record_id, username, role, content, action_time " +
                 "FROM universal_log WHERE username = ? ORDER BY action_time DESC";
         List<UniversalLog> logs = new ArrayList<>();
         try (Connection conn = new DBConnection().establish();
@@ -73,7 +73,7 @@ public class UniversalLogRepository implements DAO {
      * Retrieves logs filtered by table name.
      */
     public List<UniversalLog> getByTableName(String tableName) throws SQLException {
-        String sql = "SELECT log_id, table_name, action_type, record_id, username, role, action_time " +
+        String sql = "SELECT log_id, table_name, action_type, record_id, username, role, content, action_time " +
                 "FROM universal_log WHERE table_name = ? ORDER BY action_time DESC";
         List<UniversalLog> logs = new ArrayList<>();
         try (Connection conn = new DBConnection().establish();
@@ -92,7 +92,7 @@ public class UniversalLogRepository implements DAO {
      * Retrieves logs filtered by action type (INSERT, UPDATE, DELETE).
      */
     public List<UniversalLog> getByActionType(String actionType) throws SQLException {
-        String sql = "SELECT log_id, table_name, action_type, record_id, username, role, action_time " +
+        String sql = "SELECT log_id, table_name, action_type, record_id, username, role, content, action_time " +
                 "FROM universal_log WHERE action_type = ? ORDER BY action_time DESC";
         List<UniversalLog> logs = new ArrayList<>();
         try (Connection conn = new DBConnection().establish();
@@ -111,7 +111,7 @@ public class UniversalLogRepository implements DAO {
      * Retrieves logs related to a specific record (by its ID).
      */
     public List<UniversalLog> getByRecordId(int recordId) throws SQLException {
-        String sql = "SELECT log_id, table_name, action_type, record_id, username, role, action_time " +
+        String sql = "SELECT log_id, table_name, action_type, record_id, username, role, content, action_time " +
                 "FROM universal_log WHERE record_id = ? ORDER BY action_time DESC";
         List<UniversalLog> logs = new ArrayList<>();
         try (Connection conn = new DBConnection().establish();
@@ -133,7 +133,7 @@ public class UniversalLogRepository implements DAO {
     public List<UniversalLog> filter(String tableName, String actionType, String username,
                                      Timestamp startTime, Timestamp endTime) throws SQLException {
         StringBuilder sql = new StringBuilder(
-                "SELECT log_id, table_name, action_type, record_id, username, role, action_time " +
+                "SELECT log_id, table_name, action_type, record_id, username, role, content, action_time " +
                         "FROM universal_log WHERE 1=1 "
         );
         List<Object> params = new ArrayList<>();
@@ -260,6 +260,7 @@ public class UniversalLogRepository implements DAO {
                 rs.getObject("record_id") != null ? rs.getInt("record_id") : null,
                 rs.getString("username"),
                 rs.getString("role"),
+                rs.getString("content"),   // now safely retrievable
                 rs.getTimestamp("action_time")
         );
     }
