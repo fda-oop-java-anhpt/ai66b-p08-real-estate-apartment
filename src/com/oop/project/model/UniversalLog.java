@@ -9,16 +9,18 @@ public class UniversalLog implements POJO {
     private final Integer recordId;
     private final String username;
     private final String role;
+    private final String content;   // NEW
     private final Timestamp actionTime;
 
     public UniversalLog(int logId, String tableName, String actionType, Integer recordId,
-                        String username, String role, Timestamp actionTime) {
+                        String username, String role, String content, Timestamp actionTime) {
         this.logId = logId;
         this.tableName = tableName;
         this.actionType = actionType;
         this.recordId = recordId;
         this.username = username;
         this.role = role;
+        this.content = content;   // NEW
         this.actionTime = actionTime;
     }
 
@@ -30,11 +32,12 @@ public class UniversalLog implements POJO {
     public Integer getRecordId() { return recordId; }
     public String getUsername() { return username; }
     public String getRole() { return role; }
+    public String getContent() { return content; }   // NEW
     public Timestamp getActionTime() { return actionTime; }
 
     @Override
     public String toString() {
         return String.format("UniversalLog(%d, %s, %s, %d, %s, %s, %s)",
-                logId, tableName, actionType, recordId, username, role, actionTime);
+                logId, tableName, actionType, recordId, username, role, content);
     }
 }
