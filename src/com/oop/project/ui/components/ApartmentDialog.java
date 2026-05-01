@@ -56,20 +56,7 @@ public class ApartmentDialog extends JDialog {
         sizeField = new JTextField(20);
         statusCombo = new JComboBox<>(new String[]{"empty", "rented"});
 
-        addressField = new JTextField(20);
-        cityCombo = new SearchableComboBox(CityDataProvider.getCities());
-        priceField = new JTextField(20);
-        bedroomsField = new JTextField(20);
-        sizeField = new JTextField(20);
-        statusCombo = new JComboBox<>(new String[]{"empty", "rented"});
-
-        // Amenity selection panel
         amenityPanel = new AmenitySelectionPanel();
-
-        saveButton = new StyledButton("Save", Theme.PRIMARY);
-        cancelButton = new StyledButton("Cancel", Theme.TEXT_SECONDARY);
-        saveButton.addActionListener(e -> save());
-        cancelButton.addActionListener(e -> dispose());
 
         saveButton = new StyledButton("Save", Theme.PRIMARY);
         cancelButton = new StyledButton("Cancel", Theme.TEXT_SECONDARY);
