@@ -208,7 +208,11 @@ public class FavoritesPanel extends JPanel {
     }
 
     private void applyFilter() {
-        if (favoriteApartmentIds.isEmpty()) return;
+        // Always update the table, even when the list is empty.
+        if (favoriteApartmentIds.isEmpty()) {
+            tableModel.setApartments(new ArrayList<>());   // clear the table
+            return;
+        }
 
         String city = searchCityField.getText().trim();
         Double minPrice = parseDouble(minPriceField.getText());
