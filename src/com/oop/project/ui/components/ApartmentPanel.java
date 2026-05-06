@@ -310,6 +310,10 @@ public class ApartmentPanel extends JPanel {
         dialog.setVisible(true);
         if (dialog.isConfirmed()) {
             refreshTable();
+            Window w = SwingUtilities.getWindowAncestor(ApartmentPanel.this);
+            if (w instanceof MainFrame) {
+                ((MainFrame) w).refreshDashboard();
+            }
             JOptionPane.showMessageDialog(this, "Apartment added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
         }
     }
@@ -331,6 +335,10 @@ public class ApartmentPanel extends JPanel {
             dialog.setVisible(true);
             if (dialog.isConfirmed()) {
                 refreshTable();
+                Window w = SwingUtilities.getWindowAncestor(ApartmentPanel.this);
+                if (w instanceof MainFrame) {
+                    ((MainFrame) w).refreshDashboard();
+                }
                 JOptionPane.showMessageDialog(this, "Apartment updated successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (SQLException | SecurityException e) {
@@ -353,6 +361,10 @@ public class ApartmentPanel extends JPanel {
             try {
                 aptService.deleteApartment(apt.getApartmentId());
                 refreshTable();
+                Window w = SwingUtilities.getWindowAncestor(ApartmentPanel.this);
+                if (w instanceof MainFrame) {
+                    ((MainFrame) w).refreshDashboard();
+                }
                 JOptionPane.showMessageDialog(this, "Apartment deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
             } catch (SQLException | SecurityException e) {
                 JOptionPane.showMessageDialog(this, "Delete failed: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -591,6 +603,10 @@ public class ApartmentPanel extends JPanel {
                     Window window = SwingUtilities.getWindowAncestor(ApartmentPanel.this);
                     if (window instanceof MainFrame) {
                         ((MainFrame) window).refreshFavoritesTab();
+                    }
+                    Window w = SwingUtilities.getWindowAncestor(ApartmentPanel.this);
+                    if (w instanceof MainFrame) {
+                        ((MainFrame) w).refreshDashboard();
                     }
                     
                 } catch (Exception ex) {
