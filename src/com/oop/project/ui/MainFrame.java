@@ -21,6 +21,7 @@ public class MainFrame extends JFrame {
     private ApartmentPanel apartmentPanel;
     private FavoritesPanel favoritesPanel;
     private AdminPanel adminPanel;
+    private DashboardPanel dashboardPanel;
 
     public MainFrame() {
         currentUser = SessionManager.getCurrentUser();
@@ -63,6 +64,7 @@ public class MainFrame extends JFrame {
         apartmentPanel = new ApartmentPanel();
         favoritesPanel = new FavoritesPanel();
         adminPanel = new AdminPanel();
+        dashboardPanel = new DashboardPanel();
     }
 
     private void layoutComponents() {
@@ -83,17 +85,19 @@ public class MainFrame extends JFrame {
         add(topBar, BorderLayout.NORTH);
 
         // Tabbed pane
+        tabbedPane.addTab("Dashboard", dashboardPanel);
         tabbedPane.addTab("Apartments", apartmentPanel);
         tabbedPane.addTab("Favorites", favoritesPanel);
         add(tabbedPane, BorderLayout.CENTER);
         
         tabbedPane.addChangeListener(e -> {
-            int selectedIndex = tabbedPane.getSelectedIndex();
-            // if Favorites tab is selected (index 1)
-            if (selectedIndex == 1) {
+            int idx = tabbedPane.getSelectedIndex();
+            if (idx == 0) { // Dashboard
+                dashboardPanel.refreshDashboard();
+            } else if (idx == 2) { // Favorites
                 favoritesPanel.loadFavorites();
             }
-        });    
+        });   
     }
 
     private void styleComponents() {
@@ -172,6 +176,12 @@ public class MainFrame extends JFrame {
         if (apartmentPanel != null) {
             apartmentPanel.loadFavoriteIds();
             apartmentPanel.repaint();  // repaint table to update heart icons & golden rows
+        }
+    }
+    
+    public void refreshDashboard() {
+        if (dashboardPanel != null) {
+            dashboardPanel.refreshDashboard();
         }
     }
 }
