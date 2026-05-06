@@ -420,6 +420,10 @@ public class FavoritesPanel extends JPanel {
                     if (window instanceof MainFrame) {
                         ((MainFrame) window).refreshMainListingFavorites();
                     }
+                    Window w = SwingUtilities.getWindowAncestor(FavoritesPanel.this);
+                    if (w instanceof MainFrame) {
+                        ((MainFrame) w).refreshDashboard();
+                    }
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(FavoritesPanel.this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
