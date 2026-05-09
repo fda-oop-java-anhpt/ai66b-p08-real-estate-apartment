@@ -23,7 +23,13 @@ Liệt kê các class chính trong hệ thống và mô tả ngắn gọn vai tr
 | ApartmentExport | com.oop.project.service | Xuất tệp CSV của danh sách liệt kê cụ thể. |
 | ApartmentManagement | com.oop.project.service | Quản lý và cấp quyền chỉnh sửa danh sách căn hộ theo vai trò. |
 | ApartmentSearch | com.oop.project.service | Bộ lọc tìm kiếm căn hộ. |
-||||
+| AuthenticationController | com.oop.project.service | Điều hướng lựa chọn Đăng nhập/Đăng ký và quản lý quyền người dùng. |
+| DashboardService | com.oop.project.service | Tổng hợp dữ liệu cần thiết cho dashboard. |
+| FavouriteService | com.oop.project.service | Quản lý danh sách yêu thích cho từng người dùng. |
+| LoginAuthentication | com.oop.project.service | Chức năng đăng nhập. |
+| LoginHistoryQuery | com.oop.project.service | Bộ lọc tìm tiếm lịch sử đăng nhập (quyền Admin). |
+| NoteManagement | com.oop.project.service | Chức năng thêm, xoá, chỉnh sửa note cho người sở hữu. |
+| RegisterAuthentication | com.oop.project.service | Chức năng đăng ký. |
 ---
 
 ## 2. Áp dụng các nguyên lý OOP
