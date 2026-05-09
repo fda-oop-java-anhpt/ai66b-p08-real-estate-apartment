@@ -94,10 +94,11 @@ Liệt kê các design pattern (nếu có) và giải thích ngắn gọn cách 
 
 | Design Pattern | Áp dụng ở đâu | Mục đích |
 |---------------|-------------|---------|
-| | | |
-| | | |
-
-> Nếu không sử dụng design pattern nào, hãy giải thích lý do.
+| Data Access Object (DAO) | Toàn bộ package repository (`ApartmentRepository`, `UserRepository`, ...) đều áp dụng interface `DAO`. | Đóng gói việc truy cập cơ sở dữ liệu và logic SQL, tách biệt logic lưu trữ dữ liệu khỏi logic nghiệp vụ. Giúp dễ dàng thay đổi nguồn dữ liệu mà không ảnh hưởng đến các dịch vụ hoặc giao diện người dùng. |
+| Data Transfer Object (DTO) | Các lớp `CityStats`, `CategoryProportion`, `OverallStats` đều áp dụng interface `DTO`. | Các đối tượng gọn nhẹ mang dữ liệu tổng hợp từ cơ sở dữ liệu đến các dashboards, tránh việc phải hiển thị toàn bộ thực thể hoặc nhiều truy vấn. |
+| Singleton | `SesionManager` chỉ quản lý duy nhất một người dùng hiện tại | Lưu trữ người dùng hiện đang đăng nhập trong một trường tĩnh, giúp truy cập được thông tin này trên toàn hệ thống mà không cần truyền qua từng phương thức. |
+| Adapter | Các bảng khác nhau có thể linh hoạt hiển thị trên cùng UI (`ApartmentTableModel`, `UniversalLogTableModel`, `FavoritesTableModel`) | Chuyển đổi danh sách đối tượng thành TableModel mà JTable có thể hiển thị, dịch các lệnh gọi phương thức sang định dạng mong muốn. |
+| Facade | Các business logics có cấu trúc phức tạp (`ApartmentManagement`, `ApartmentSearch`, `DashboardService`, `LoginAuthentication`, ...) được thể hiện đơn giản với người dùng qua UI | Sự phức tạp của mã nguồn được ẩn trong hệ thống, cung cấp dịch vụ tới người dùng thông qua UI đơn giản và trực quan . Điều này đơn giản hóa lớp giao diện người dùng và tập trung hóa các quy tắc nghiệp vụ. |
 
 ---
 
