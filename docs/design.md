@@ -35,6 +35,20 @@ Liệt kê các class chính trong hệ thống và mô tả ngắn gọn vai tr
 | `HashingUtil` | `com.oop.project.util` | Mã hoá mật khẩu sang định dạng SHA-256. |
 | `ReadEnv` | `com.oop.project.util` | Đọc thông tin từ các tệp .env. |
 | `SessionManager` | `com.oop.project.util` | Lưu lại thông tin của người dùng đăng nhập hiện tại, để quản lý quyền và ghi audit logs. |
+| `LoginScreen` | `com.oop.project.ui` | Cửa sổ đăng nhập / đăng ký. |
+| `MainFrame` | `com.oop.project.ui` | Cửa sổ chính sau khi đăng nhập thành công, giao diện sảnh chính. |
+| `AdminPanel` | `com.oop.project.ui.components` | Tab chỉ hiện thị với admin, dẫn đến các chức năng xem lịch sử đăng nhập và audit logs. |
+| `ApartmentPanel` | `com.oop.project.ui.components` | Bảng hiển thị danh sách căn hộ chính. Bao gồm bộ lọc, các nút thao tác (Add/Edit/Delete/Export CSV – với quyền truy cập theo vai trò), nút hình trái tim cho mục yêu thích và nút ghi chú cho từng căn hộ. |
+| `ApartmentDialog` | `com.oop.project.ui.components` | Hộp thoại để tạo hoặc chỉnh sửa căn hộ. Bao gồm các trường thông tin về địa chỉ, thành phố, giá cả, số phòng ngủ, diện tích, tình trạng và lựa chọn tiện nghi. |
+| `ApartmentTableModel` | `com.oop.project.ui.components` | TableModel dùng để lưu trữ và sắp xếp/lọc danh sách căn hộ. Được sử dụng bởi ApartmentPanel. |
+| `AuditLogPanel` | `com.oop.project.ui.components` | Hiển thị mục universal_log (chỉ dành cho admin). |
+| `BarChartPanel` | `com.oop.project.ui.components` | Biểu đồ cột trong dashboard. Kèm theo hiệu chứng chuyển cảnh, nhãn giá trị và tùy chọn sắp xếp. Cập nhật theo thời gian thực |
+| `DashboardPanel` | `com.oop.project.ui.components` | Chứa các tab con: Summary, Bar Chart và Pie Chart. |
+| `FavoritesPanel` | `com.oop.project.ui.components` | Hiển thị các căn hộ yêu thích của người dùng hiện tại, giao diện tương tự giao diện chính. |
+| `FavoritesTableModel` | `com.oop.project.ui.components` | TableModel cho danh sách yêu thích. |
+| `NotesDialog` | `com.oop.project.ui.components` | Hiển thị tất cả ghi chú cho một căn hộ cụ thể. Chỉ tác giả mới có thể chỉnh sửa hoặc xóa ghi chú của chính họ. |
+| `PieChartPanel` | `com.oop.project.ui.components` | Biểu đồ tròn trong dashboard. Kèm theo hiệu chứng chuyển cảnh, nhãn giá trị và tùy chọn sắp xếp. Cập nhật theo thời gian thực. |
+
 ---
 
 ## 2. Áp dụng các nguyên lý OOP
@@ -47,8 +61,11 @@ Mô tả rõ **từng nguyên lý OOP được áp dụng ở đâu trong hệ t
 - Lý do áp dụng encapsulation?
 
 **Mô tả:**
-> …
-
+> Được áp dụng và thể hiện rõ nhất ở trong tất cả các lớp POJOs và DTOs trong package model.  
+> Ví dụ lớp `Apartment`:
+> - Tất cả các thuộc tính Id, address, city, price, ... đều được khai báo `private`.
+> - Chỉ có thể truy cập thông qua các getters: `getId()`, `getAddress()`, `getCity()`, `getPrice()`, ...
+> - Đây đều là các thông tin quan trọng của căn hộ, phải được đóng gói và truy cập thông qua phương thức trung gian để đảm bảo tính toàn vẹn của dữ liệu, tránh tác động từ phía không được uỷ quyền.
 ---
 
 ### 2.2. Inheritance
