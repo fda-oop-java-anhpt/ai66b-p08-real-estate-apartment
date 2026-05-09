@@ -74,7 +74,18 @@ Mô tả rõ **từng nguyên lý OOP được áp dụng ở đâu trong hệ t
 - Lý do sử dụng kế thừa?
 
 **Mô tả:**
-> …
+| Superclass | Subclass |
+|---------------|-------------|
+| `javax.swing.JFrame` | `LoginScreen`, `MainFrame` |
+| `javax.swing.JPanel` | `ApartmentPanel`, `FavoritesPanel`, `AuditLogPanel`, `DashboardPanel`, `BarChartPanel`, `PieChartPanel`, `AdminPanel`, `SummaryPanel`, ... |
+| `javax.swing.JDialog` | `ApartmentDialog`, `AmenityFilterDialog`, `NotesDialog` |
+| `javax.swing.table.AbstractTableModel` | `ApartmentTableModel`, `FavoritesTableModel`, `LoginHistoryTableModel`, `UniversalLogTableModel` |
+| `javax.swing.table.TableCellRenderer` | Inner classes `AmenityCellRenderer`, `NotesButtonRenderer`, `FavButtonRenderer`, ... |
+> - Tái sử dụng (Reusability) – Có được tất cả các hành vi tích hợp sẵn của cửa sổ, bảng điều khiển, nút bấm, bảng và chỉ ghi đè những gì cần tùy chỉnh (bố cục, vẽ, xử lý sự kiện).
+>
+> - Tính nhất quán (Consistency) – Lớp Theme (phông chữ, màu sắc) được áp dụng trong các lớp con này, mang lại giao diện hiện đại đồng nhất mà không cần sao chép mã.
+>
+> - Tính đa hình (Polymorphism) – Các container có thể xử lý nhiều bảng điều khiển khác nhau như JPanel, giúp việc quản lý bố cục trở nên đơn giản.
 
 ---
 
@@ -83,7 +94,8 @@ Mô tả rõ **từng nguyên lý OOP được áp dụng ở đâu trong hệ t
 - Được gọi thông qua reference kiểu cha ở đâu?
 
 **Mô tả:**
-> …
+> - Các lớp POJOs (`Amenity`, `Apartment`, `User`, ...) đều ghi đè phương thức `getId()` từ interface `POJO`.
+> - Lớp cha `AbstractTableModel` có các phương thức `getRowCount()`, `getColumnCount()`, `getValueAt(int row, int column)`, `getColumnName(int column)`, `isCellEditable(int row, int col)` được các lớp con ghi đè (`ApartmentTableModel`, `FavoritesTableModel`, ...)
 
 ---
 
@@ -92,7 +104,8 @@ Mô tả rõ **từng nguyên lý OOP được áp dụng ở đâu trong hệ t
 - Vai trò của interface trong thiết kế?
 
 **Mô tả:**
-> …
+> - Các giao diện tùy chỉnh (`POJO`, `DTO`, `DAO`) xác định kiến ​​trúc cốt lõi của dự án bằng cách phân loại các lớp thành các thực thể, các phần tử chứa dữ liệu và các trình xử lý cơ sở dữ liệu.
+> - Các giao diện Swing (`TableCellRenderer`, `DocumentListener`, `ActionListener`, ...) được sử dụng rộng rãi để xây dựng giao diện người dùng hiện đại, đáp ứng nhanh và có tính tương tác cao, đồng thời vẫn giữ cho mã nguồn có tính module và dễ bảo trì.
 
 ---
 
@@ -101,8 +114,9 @@ Mô tả rõ **từng nguyên lý OOP được áp dụng ở đâu trong hệ t
 - Phần chi tiết nào được ẩn đi?
 
 **Mô tả:**
-> …
-
+> - interface `POJO` định nghĩa 2 phương thức trừu tượng `getId()` và `toString()`.
+> - Lớp trừu tượng `AbstractTableModel` định nghĩa các phương thức trừu tượng `getRowCount()`, `getColumnCount()`, `getValueAt(row, col)`, ... .
+> - Lớp trừu tượng `StringWorker` định nghĩa phương thức trừu tượng `doInBackground()`.
 ---
 
 ## 3. Design Patterns được sử dụng
@@ -115,7 +129,7 @@ Liệt kê các design pattern (nếu có) và giải thích ngắn gọn cách 
 | Data Transfer Object (DTO) | Các lớp `CityStats`, `CategoryProportion`, `OverallStats` đều áp dụng interface `DTO`. | Các đối tượng gọn nhẹ mang dữ liệu tổng hợp từ cơ sở dữ liệu đến các dashboards, tránh việc phải hiển thị toàn bộ thực thể hoặc nhiều truy vấn. |
 | Singleton | `SesionManager` chỉ quản lý duy nhất một người dùng hiện tại | Lưu trữ người dùng hiện đang đăng nhập trong một trường tĩnh, giúp truy cập được thông tin này trên toàn hệ thống mà không cần truyền qua từng phương thức. |
 | Adapter | Các bảng khác nhau có thể linh hoạt hiển thị trên cùng UI (`ApartmentTableModel`, `UniversalLogTableModel`, `FavoritesTableModel`) | Chuyển đổi danh sách đối tượng thành TableModel mà JTable có thể hiển thị, dịch các lệnh gọi phương thức sang định dạng mong muốn. |
-| Facade | Các business logics có cấu trúc phức tạp (`ApartmentManagement`, `ApartmentSearch`, `DashboardService`, `LoginAuthentication`, ...) được thể hiện đơn giản với người dùng qua UI | Sự phức tạp của mã nguồn được ẩn trong hệ thống, cung cấp dịch vụ tới người dùng thông qua UI đơn giản và trực quan . Điều này đơn giản hóa lớp giao diện người dùng và tập trung hóa các quy tắc nghiệp vụ. |
+| Facade | Các business logics có cấu trúc phức tạp (`ApartmentManagement`, `ApartmentSearch`, `DashboardService`, `LoginAuthentication`, ...) được thể hiện đơn giản với người dùng qua UI | Sự phức tạp của mã nguồn được ẩn trong hệ thống, cung cấp dịch vụ tới người dùng thông qua UI đơn giản và trực quan. Điều này giúp đơn giản hóa lớp giao diện người dùng và tập trung hóa các quy tắc nghiệp vụ. |
 
 ---
 
