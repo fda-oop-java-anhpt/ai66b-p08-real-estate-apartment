@@ -6,10 +6,24 @@ Liệt kê các class chính trong hệ thống và mô tả ngắn gọn vai tr
 
 | Class | Package | Vai trò |
 |------|--------|--------|
-| | | |
-| | | |
-| | | |
-
+| DBConnection | com.oop.project.db | Quản lý các tham số kết nối MySQL (tệp Connection.env) và cung cấp các phương thức để thiết lập kết nối. |
+| Amenity | com.oop.project.model | Object cho dữ liệu từ bảng 'amenity'. |
+| Apartment | com.oop.project.model | Object cho dữ liệu từ bảng 'apartment'. |
+| Favourite | com.oop.project.model | Object cho dữ liệu từ bảng 'favourite'. |
+| Note | com.oop.project.model | Object cho dữ liệu từ bảng 'note'. |
+| User | com.oop.project.model | Object cho dữ liệu từ bảng 'user'. |
+| AmenityRepository | com.oop.project.repository | Cung cấp các phương thức CRUD cho bảng 'amenity'. |
+| ApartmentAmenityRepository | com.oop.project.repository | Quản lý bảng trung gian 'apartmentAmenities'. |
+| ApartmentRepository | com.oop.project.repository | Cung cấp các phương thức CRUD, bộ lọc tìm kiếm, xuất CSV cho bảng 'apartment'. |
+| DashboardRepository | com.oop.project.repository | Cung cấp các truy vấn cần thiết cho dashboard. |
+| FavouriteRepository | com.oop.project.repository | Quản lý danh sách favourite của từng user. |
+| NoteRepository | com.oop.project.repository | Cung cấp các phương thức CRUD cho bảng 'note', kiểm tra quyền sở hữu 'note'. |
+| UserRepository | com.oop.project.repository | Cung cấp các phương thức CREATE và READ cho bảng 'user'. |
+| ApartmentAmenity | com.oop.project.service | Liệt kê danh sách amenities của từng căn hộ. |
+| ApartmentExport | com.oop.project.service | Xuất tệp CSV của danh sách liệt kê cụ thể. |
+| ApartmentManagement | com.oop.project.service | Quản lý và cấp quyền chỉnh sửa danh sách căn hộ theo vai trò. |
+| ApartmentSearch | com.oop.project.service | Bộ lọc tìm kiếm căn hộ. |
+||||
 ---
 
 ## 2. Áp dụng các nguyên lý OOP
