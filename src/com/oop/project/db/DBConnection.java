@@ -14,7 +14,7 @@ public class DBConnection {
     * Connection URL composition: jdbc:mysql://Hostname:Port/your_schema
     * Left click the connection in MySQL, then choose 'Edit connection' to see your parameters.
     */
-    private static final Map<String,String> envMap = new ReadEnv("/com/oop/project/config/.env").load();
+    private static final Map<String,String> envMap = new ReadEnv("/com/oop/project/config/Connection.env").load();
     
     private static final String HOST = envMap.getOrDefault("HOST", "localhost");
     private static final String PORT = envMap.getOrDefault("PORT", "3306");
@@ -28,7 +28,7 @@ public class DBConnection {
     public DBConnection() {}
     
     // This method is to establish a connection.
-    public static Connection establish() throws SQLException {
+    public Connection establish() throws SQLException {
         // return a connection if valid, else SQLException Error.
         return DriverManager.getConnection(URL, USERNAME, PASSWORD);
         }
