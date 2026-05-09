@@ -137,15 +137,13 @@ Mô tả các luồng xử lý chính của hệ thống theo dạng từng bư�
 
 ## 6. Thiết kế lưu trữ dữ liệu (Database / File Design)
 
-Mô tả cách hệ thống lưu trữ dữ liệu.
-
 ### 6.1. Hình thức lưu trữ
 - [ ] In-memory
 - [ ] File (txt / csv / json)
-- [ ] Database (MySQL, SQLite, ...)
+- [x] Database (MySQL, SQLite, ...)
 
 **Mô tả lý do lựa chọn:**
-> …
+> Database (MySQL) cung cấp độ tin cậy, hiệu suất, bảo mật và bộ tính năng cần thiết cho một hệ thống quản lý đa người dùng, dựa trên vai trò – vượt xa những gì mà các tập tin, danh sách hoặc bộ nhớ trong có thể cung cấp.
 
 ---
 
