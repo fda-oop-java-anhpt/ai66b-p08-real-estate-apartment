@@ -6,30 +6,35 @@ Liệt kê các class chính trong hệ thống và mô tả ngắn gọn vai tr
 
 | Class | Package | Vai trò |
 |------|--------|--------|
-| DBConnection | com.oop.project.db | Quản lý các tham số kết nối MySQL (tệp Connection.env) và cung cấp các phương thức để thiết lập kết nối. |
-| Amenity | com.oop.project.model | Object cho dữ liệu từ bảng 'amenity'. |
-| Apartment | com.oop.project.model | Object cho dữ liệu từ bảng 'apartment'. |
-| Favourite | com.oop.project.model | Object cho dữ liệu từ bảng 'favourite'. |
-| Note | com.oop.project.model | Object cho dữ liệu từ bảng 'note'. |
-| User | com.oop.project.model | Object cho dữ liệu từ bảng 'user'. |
-| AmenityRepository | com.oop.project.repository | Cung cấp các phương thức CRUD cho bảng 'amenity'. |
-| ApartmentAmenityRepository | com.oop.project.repository | Quản lý bảng trung gian 'apartmentAmenities'. |
-| ApartmentRepository | com.oop.project.repository | Cung cấp các phương thức CRUD, bộ lọc tìm kiếm, xuất CSV cho bảng 'apartment'. |
-| DashboardRepository | com.oop.project.repository | Cung cấp các truy vấn cần thiết cho dashboard. |
-| FavouriteRepository | com.oop.project.repository | Quản lý danh sách favourite của từng user. |
-| NoteRepository | com.oop.project.repository | Cung cấp các phương thức CRUD cho bảng 'note', kiểm tra quyền sở hữu 'note'. |
-| UserRepository | com.oop.project.repository | Cung cấp các phương thức CREATE và READ cho bảng 'user'. |
-| ApartmentAmenity | com.oop.project.service | Liệt kê danh sách amenities của từng căn hộ. |
-| ApartmentExport | com.oop.project.service | Xuất tệp CSV của danh sách liệt kê cụ thể. |
-| ApartmentManagement | com.oop.project.service | Quản lý và cấp quyền chỉnh sửa danh sách căn hộ theo vai trò. |
-| ApartmentSearch | com.oop.project.service | Bộ lọc tìm kiếm căn hộ. |
-| AuthenticationController | com.oop.project.service | Điều hướng lựa chọn Đăng nhập/Đăng ký và quản lý quyền người dùng. |
-| DashboardService | com.oop.project.service | Tổng hợp dữ liệu cần thiết cho dashboard. |
-| FavouriteService | com.oop.project.service | Quản lý danh sách yêu thích cho từng người dùng. |
-| LoginAuthentication | com.oop.project.service | Chức năng đăng nhập. |
-| LoginHistoryQuery | com.oop.project.service | Bộ lọc tìm tiếm lịch sử đăng nhập (quyền Admin). |
-| NoteManagement | com.oop.project.service | Chức năng thêm, xoá, chỉnh sửa note cho người sở hữu. |
-| RegisterAuthentication | com.oop.project.service | Chức năng đăng ký. |
+| `DBConnection` | `com.oop.project.db` | Quản lý các tham số kết nối MySQL (tệp `Connection.env`) và cung cấp các phương thức để thiết lập kết nối. |
+| `Amenity` | `com.oop.project.model` | Object cho dữ liệu từ bảng 'amenity'. |
+| `Apartment` | `com.oop.project.model` | Object cho dữ liệu từ bảng 'apartment'. |
+| `Favourite` | `com.oop.project.model` | Object cho dữ liệu từ bảng 'favourite'. |
+| `Note` | `com.oop.project.model` | Object cho dữ liệu từ bảng 'note'. |
+| `User` | `com.oop.project.model` | Object cho dữ liệu từ bảng 'user'. |
+| `AmenityRepository` | `com.oop.project.repository` | Cung cấp các phương thức CRUD cho bảng 'amenity'. |
+| `ApartmentAmenityRepository` | `com.oop.project.repository` | Quản lý bảng trung gian 'apartmentAmenities'. |
+| `ApartmentRepository` | `com.oop.project.repository` | Cung cấp các phương thức CRUD, bộ lọc tìm kiếm, xuất CSV cho bảng 'apartment'. |
+| `DashboardRepository` | `com.oop.project.repository` | Cung cấp các truy vấn cần thiết cho dashboard. |
+| `FavouriteRepository` | `com.oop.project.repository` | Quản lý danh sách favourite của từng user. |
+| `NoteRepository` | `com.oop.project.repository` | Cung cấp các phương thức CRUD cho bảng 'note', kiểm tra quyền sở hữu 'note'. |
+| `UserRepository` | `com.oop.project.repository` | Cung cấp các phương thức CREATE và READ cho bảng 'user'. |
+| `ApartmentAmenity` | `com.oop.project.service` | Liệt kê danh sách amenities của từng căn hộ. |
+| `ApartmentExport` | `com.oop.project.service` | Xuất tệp CSV của danh sách liệt kê cụ thể. |
+| `ApartmentManagement` | `com.oop.project.service` | Quản lý và cấp quyền chỉnh sửa danh sách căn hộ theo vai trò. |
+| `ApartmentSearch` | `com.oop.project.service` | Bộ lọc tìm kiếm căn hộ. |
+| `AuthenticationController` | `com.oop.project.service` | Điều hướng lựa chọn Đăng nhập/Đăng ký và quản lý quyền người dùng. |
+| `DashboardService` | `com.oop.project.service` | Tổng hợp dữ liệu cần thiết cho dashboard. |
+| `FavouriteService` | `com.oop.project.service` | Quản lý danh sách yêu thích cho từng người dùng. |
+| `LoginAuthentication` | `com.oop.project.service` | Chức năng đăng nhập. |
+| `LoginHistoryQuery` | `com.oop.project.service` | Bộ lọc tìm tiếm lịch sử đăng nhập (quyền Admin). |
+| `NoteManagement` | `com.oop.project.service` | Chức năng thêm, xoá, chỉnh sửa note cho người sở hữu. |
+| `RegisterAuthentication` | `com.oop.project.service` | Chức năng đăng ký. |
+| `ApartmentCategorizer` | `com.oop.project.util` | Tự động phân loại căn hộ dựa trên mức giá và diện tích (từ `ApartmentCategory.env`). |
+| `CityDataProvider` | `com.oop.project.util` | Cung cấp danh sách các thành phố (từ `Cities.env`). |
+| `HashingUtil` | `com.oop.project.util` | Mã hoá mật khẩu sang định dạng SHA-256. |
+| `ReadEnv` | `com.oop.project.util` | Đọc thông tin từ các tệp .env. |
+| `SessionManager` | `com.oop.project.util` | Lưu lại thông tin của người dùng đăng nhập hiện tại, để quản lý quyền và ghi audit logs. |
 ---
 
 ## 2. Áp dụng các nguyên lý OOP
