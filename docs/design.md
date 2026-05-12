@@ -155,7 +155,7 @@ Mô tả các luồng xử lý chính của hệ thống theo dạng từng bư�
 
 ### 4.3. Apartment filtering
 1. Người dùng lựa chọn filter theo ý muốn.
-2. Main Frame gửi thông tin đến service theo bảng tương ứng.
+2. Main Frame gửi thông tin đến ApartmentSearch.
 3. Service gửi yêu cầu đến MySQL.
 4. MySQl thực hiện procedures.
 4. MainFrame refresh data.
