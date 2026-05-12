@@ -145,10 +145,13 @@ Mô tả các luồng xử lý chính của hệ thống theo dạng từng bư�
 
 ---
 
-### 4.2. [Tên luồng chức năng khác]
-1. …
-2. …
-3. …
+### 4.2. Create - Update - Delete (CRUD)
+1. Người dùng lựa chọn đơn vị data (ô/hàng/cột) muốn chỉnh sửa 
+2. Người dùng ấn nút hành động muốn thực hiện (Insert, Update, Delete)
+3. Main Frame gửi thông tin đến service theo bảng tương ứng (vd: ApartmentManagement)
+4. Service gửi yêu cầu đến MySQL
+5. MySQl kiểm tra constraints, triggers,... thực hiện yêu cầu
+6. MainFrame refresh data
 
 ---
 
