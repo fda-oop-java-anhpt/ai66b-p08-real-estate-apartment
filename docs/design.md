@@ -161,7 +161,14 @@ Mô tả các luồng xử lý chính của hệ thống theo dạng từng bư�
 4. MainFrame refresh data.
 
 ### 4.4 Export to CSV
-1. 
+1. Người dùng nhấn nút **"Export CSV"**.  
+2. Panel lấy danh sách căn hộ hiện tại (đã được lọc/sắp xếp) từ **table model**.  
+3. **JFileChooser** hiển thị để người dùng chọn vị trí lưu file.  
+4. Dịch vụ **ApartmentExport** ghi dữ liệu vào file CSV:  
+   - Ghi dòng tiêu đề với tên các cột.  
+   - Ghi từng dòng dữ liệu cho mỗi căn hộ, với các giá trị được escape đúng chuẩn.  
+5. Hiển thị thông báo **thành công** cho người dùng.  
+
 
 ### 4.5 Dashboards
 ---
