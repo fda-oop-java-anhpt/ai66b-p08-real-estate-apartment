@@ -220,9 +220,31 @@ Mô tả các luồng xử lý chính của hệ thống theo dạng từng bư�
 
 ## 7. Nhận xét về thiết kế (Optional)
 
-- Ưu điểm của thiết kế hiện tại
-- Hạn chế
-- Hướng cải tiến trong tương lai (nếu có)
+# Nhận xét về thiết kế hệ thống
+
+## Ưu điểm của thiết kế hiện tại
+- **Cấu trúc rõ ràng, phân tầng hợp lý**: chia thành các package `model`, `repository`, `service`, `util`, `ui` giúp dễ bảo trì và mở rộng.  
+- **Áp dụng đầy đủ nguyên lý OOP**: có encapsulation (đóng gói dữ liệu), inheritance (kế thừa từ Swing), polymorphism (ghi đè phương thức), abstraction và interface.  
+- **Sử dụng design patterns chuẩn**: DAO, DTO, Singleton, Adapter, Facade giúp tách biệt logic, tăng khả năng tái sử dụng và giảm phụ thuộc.  
+- **Luồng hoạt động được mô tả chi tiết**: login, CRUD, filtering, export CSV, dashboard đều có bước rõ ràng, dễ hình dung.  
+- **Cơ sở dữ liệu thiết kế chặt chẽ**: có constraints, foreign keys, bảng log để audit, bảng login_history để theo dõi đăng nhập.  
+- **UI trực quan**: phân chia panel, dialog, table model hợp lý, hỗ trợ vai trò khác nhau (admin/agent).  
+
+---
+
+## Hạn chế
+- **Thiếu mô tả chi tiết về bảo mật**: mới chỉ có hashing mật khẩu, chưa thấy cơ chế quản lý session nâng cao. 
+- **Phụ thuộc nhiều vào MySQL**: chưa có abstraction để dễ dàng thay đổi sang DB khác (ví dụ PostgreSQL).  
+- **UI dựa nhiều vào Swing**: giao diện có thể bị hạn chế về trải nghiệm người dùng hiện đại (so với web hoặc framework mới). 
+
+---
+
+## Hướng cải tiến trong tương lai
+- **Tăng cường bảo mật**: bổ sung JWT/session token, phân quyền chi tiết theo role, logging nâng cao.  
+- **Đa dạng hóa cơ sở dữ liệu**: thiết kế thêm lớp abstraction để dễ dàng chuyển đổi DB (MySQL ↔ PostgreSQL ↔ SQLite).  
+- **Cải thiện UI/UX**: cân nhắc chuyển sang framework web (Spring Boot + React/Vue) hoặc JavaFX để hiện đại hơn.  
+- **Mở rộng phạm vi quản lý**: thêm module cho các loại bất động sản khác, báo cáo nâng cao (ví dụ: thống kê theo thành phố, theo giá).  
+- **Khả năng triển khai thực tế**: bổ sung API RESTful để hệ thống có thể kết nối với ứng dụng di động hoặc dịch vụ bên ngoài.  
 
 ---
 
