@@ -60,11 +60,11 @@ CREATE TABLE `notes` (
 CREATE TABLE universal_log (
     log_id          INT PRIMARY KEY AUTO_INCREMENT,
     table_name      VARCHAR(255) NOT NULL,
-    action_type     VARCHAR(255) NOT NULL,   -- 'INSERT', 'UPDATE', 'DELETE'
-    record_id       INT,                      -- primary key of affected row (if applicable)
-    username        VARCHAR(255),             -- who performed the action
-    role            VARCHAR(255),             -- role at the time of action
-    content         TEXT,                     -- detailed description of the change
+    action_type     VARCHAR(255) NOT NULL, 
+    record_id       INT,                      
+    username        VARCHAR(255),            
+    role            VARCHAR(255),            
+    content         TEXT,                  
     action_time     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (username) REFERENCES users(username)
 );

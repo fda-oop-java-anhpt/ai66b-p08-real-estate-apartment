@@ -1,7 +1,7 @@
 DELIMITER $$
 
 -- =========================================================
--- Timestamp auto‑update triggers (keep)
+-- Timestamp auto‑update triggers
 -- =========================================================
 CREATE TRIGGER before_apartment_update
 BEFORE UPDATE ON apartment
@@ -24,7 +24,7 @@ END$$
 DELIMITER ;
 
 -- =========================================================
--- Cascading delete triggers (keep for data integrity)
+-- Cascading delete triggers
 -- =========================================================
 DELIMITER //
 CREATE TRIGGER delamen_apar
@@ -67,7 +67,7 @@ END //
 DELIMITER ;
 
 -- =========================================================
--- Login history trigger (keep)
+-- Login history trigger
 -- =========================================================
 DELIMITER //
 CREATE TRIGGER after_user_login_update

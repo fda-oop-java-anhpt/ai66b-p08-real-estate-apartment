@@ -236,17 +236,13 @@ public class ApartmentRepository implements DAO {
             params.add(status.trim());
         }
 
-        // Amenity filter: apartment must have at least one of the selected amenities
         if (amenityIds != null && !amenityIds.isEmpty()) {
-            StringBuilder inClause = new StringBuilder();
             for (int i = 0; i < amenityIds.size(); i++) {
-                if (i > 0) inClause.append(", ");
-                inClause.append("?");
+                conditions.add("EXISTS (SELECT 1 FROM apartmentAmenities aa" + i +
+                               " WHERE aa" + i + ".apartment_id = a.apartment_id " +
+                               "AND aa" + i + ".amenity_id = ?)");
                 params.add(amenityIds.get(i));
             }
-            conditions.add("EXISTS (SELECT 1 FROM apartmentAmenities aa2 " +
-                           "WHERE aa2.apartment_id = a.apartment_id " +
-                           "AND aa2.amenity_id IN (" + inClause + "))");
         }
 
         // Append WHERE clause if any conditions exist
@@ -433,15 +429,12 @@ public class ApartmentRepository implements DAO {
             conditions.add("a.status = ?"); params.add(status.trim());
         }
         if (amenityIds != null && !amenityIds.isEmpty()) {
-            StringBuilder inClause = new StringBuilder();
             for (int i = 0; i < amenityIds.size(); i++) {
-                if (i > 0) inClause.append(", ");
-                inClause.append("?");
+                conditions.add("EXISTS (SELECT 1 FROM apartmentAmenities aa" + i +
+                               " WHERE aa" + i + ".apartment_id = a.apartment_id " +
+                               "AND aa" + i + ".amenity_id = ?)");
                 params.add(amenityIds.get(i));
             }
-            conditions.add("EXISTS (SELECT 1 FROM apartmentAmenities aa2 " +
-                           "WHERE aa2.apartment_id = a.apartment_id " +
-                           "AND aa2.amenity_id IN (" + inClause + "))");
         }
 
         if (!conditions.isEmpty()) {

@@ -51,11 +51,11 @@ public class LoginHistoryRepository implements DAO {
      * Retrieves login history for a specific user.
      */
     public List<LoginHistory> getByUsername(String username) throws SQLException {
-        String sql = "SELECT login_id, username, role, log_time FROM login_history WHERE username = ? ORDER BY log_time DESC";
+        String sql = "SELECT login_id, username, role, log_time FROM login_history WHERE username LIKE ? ORDER BY log_time DESC";
         List<LoginHistory> history = new ArrayList<>();
         try (Connection conn = new DBConnection().establish();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, username);
+            stmt.setString(1, "%" + username + "%");
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     history.add(mapRowToLoginHistory(rs));
@@ -69,11 +69,11 @@ public class LoginHistoryRepository implements DAO {
      * Retrieves login history filtered by role (admin/agent).
      */
     public List<LoginHistory> getByRole(String role) throws SQLException {
-        String sql = "SELECT login_id, username, role, log_time FROM login_history WHERE role = ? ORDER BY log_time DESC";
+        String sql = "SELECT login_id, username, role, log_time FROM login_history WHERE role LIKE ? ORDER BY log_time DESC";
         List<LoginHistory> history = new ArrayList<>();
         try (Connection conn = new DBConnection().establish();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, role);
+            stmt.setString(1, "%" + role + "%");
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     history.add(mapRowToLoginHistory(rs));
@@ -93,12 +93,12 @@ public class LoginHistoryRepository implements DAO {
         List<Object> params = new ArrayList<>();
 
         if (username != null && !username.trim().isEmpty()) {
-            sql.append("AND username = ? ");
-            params.add(username);
+            sql.append("AND username LIKE ? ");
+            params.add("%" + username + "%");
         }
         if (role != null && !role.trim().isEmpty()) {
-            sql.append("AND role = ? ");
-            params.add(role);
+            sql.append("AND role LIKE ? ");
+            params.add("%" + role + "%");
         }
         if (startTime != null) {
             sql.append("AND log_time >= ? ");

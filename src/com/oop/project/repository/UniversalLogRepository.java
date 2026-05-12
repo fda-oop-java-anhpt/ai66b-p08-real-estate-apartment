@@ -55,11 +55,11 @@ public class UniversalLogRepository implements DAO {
      */
     public List<UniversalLog> getByUsername(String username) throws SQLException {
         String sql = "SELECT log_id, table_name, action_type, record_id, username, role, content, action_time " +
-                "FROM universal_log WHERE username = ? ORDER BY action_time DESC";
+                "FROM universal_log WHERE username LIKE ? ORDER BY action_time DESC";
         List<UniversalLog> logs = new ArrayList<>();
         try (Connection conn = new DBConnection().establish();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, username);
+            stmt.setString(1, "%" + username + "%");
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     logs.add(mapRowToLog(rs));
@@ -74,11 +74,11 @@ public class UniversalLogRepository implements DAO {
      */
     public List<UniversalLog> getByTableName(String tableName) throws SQLException {
         String sql = "SELECT log_id, table_name, action_type, record_id, username, role, content, action_time " +
-                "FROM universal_log WHERE table_name = ? ORDER BY action_time DESC";
+                "FROM universal_log WHERE table_name LIKE ? ORDER BY action_time DESC";
         List<UniversalLog> logs = new ArrayList<>();
         try (Connection conn = new DBConnection().establish();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, tableName);
+            stmt.setString(1, "%" + tableName + "%");
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     logs.add(mapRowToLog(rs));
@@ -93,11 +93,11 @@ public class UniversalLogRepository implements DAO {
      */
     public List<UniversalLog> getByActionType(String actionType) throws SQLException {
         String sql = "SELECT log_id, table_name, action_type, record_id, username, role, content, action_time " +
-                "FROM universal_log WHERE action_type = ? ORDER BY action_time DESC";
+                "FROM universal_log WHERE action_type LIKE ? ORDER BY action_time DESC";
         List<UniversalLog> logs = new ArrayList<>();
         try (Connection conn = new DBConnection().establish();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, actionType);
+            stmt.setString(1, "%" + actionType + "%");
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     logs.add(mapRowToLog(rs));
@@ -139,16 +139,16 @@ public class UniversalLogRepository implements DAO {
         List<Object> params = new ArrayList<>();
 
         if (tableName != null && !tableName.trim().isEmpty()) {
-            sql.append("AND table_name = ? ");
-            params.add(tableName);
+            sql.append("AND table_name LIKE ? ");
+            params.add("%" + tableName + "%");
         }
         if (actionType != null && !actionType.trim().isEmpty()) {
-            sql.append("AND action_type = ? ");
-            params.add(actionType);
+            sql.append("AND action_type LIKE ? ");
+            params.add("%" + actionType + "%");
         }
         if (username != null && !username.trim().isEmpty()) {
-            sql.append("AND username = ? ");
-            params.add(username);
+            sql.append("AND username LIKE ? ");
+            params.add("%" + username + "%");
         }
         if (startTime != null) {
             sql.append("AND action_time >= ? ");
