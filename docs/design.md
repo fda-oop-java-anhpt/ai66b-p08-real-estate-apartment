@@ -146,13 +146,34 @@ Mô tả các luồng xử lý chính của hệ thống theo dạng từng bư�
 ---
 
 ### 4.2. Create - Update - Delete (CRUD)
-1. Người dùng lựa chọn đơn vị data (ô/hàng/cột) muốn chỉnh sửa 
-2. Người dùng ấn nút hành động muốn thực hiện (Insert, Update, Delete)
-3. Main Frame gửi thông tin đến service theo bảng tương ứng (vd: ApartmentManagement)
-4. Service gửi yêu cầu đến MySQL
-5. MySQl kiểm tra constraints, triggers,... thực hiện yêu cầu
-6. MainFrame refresh data
+1. Người dùng lựa chọn đơn vị data (ô/hàng/cột) muốn chỉnh sửa.
+2. Người dùng ấn nút hành động muốn thực hiện (Insert, Update, Delete).
+3. Main Frame gửi thông tin đến service theo bảng tương ứng (vd: ApartmentManagement).
+4. Service gửi yêu cầu đến MySQL.
+5. MySQl kiểm tra constraints, triggers,... thực hiện yêu cầu.
+6. MainFrame tự động refresh data.
 
+### 4.3. Apartment filtering
+1. Người dùng lựa chọn filter theo ý muốn.
+2. Main Frame gửi thông tin đến ApartmentSearch.
+3. Service gửi yêu cầu đến MySQL.
+4. MySQl thực hiện procedures.
+4. MainFrame tự động refresh data.
+
+### 4.4 Export to CSV
+1. Người dùng nhấn nút **"Export CSV"**.  
+2. Panel lấy danh sách căn hộ hiện tại (đã được lọc/sắp xếp) từ **table model**.  
+3. **JFileChooser** hiển thị để người dùng chọn vị trí lưu file.  
+4. Dịch vụ **ApartmentExport** ghi dữ liệu vào file CSV:  
+   - Ghi dòng tiêu đề với tên các cột.  
+   - Ghi từng dòng dữ liệu cho mỗi căn hộ, với các giá trị được escape đúng chuẩn.  
+5. Hiển thị thông báo **thành công** cho người dùng.  
+
+### 4.5 Dashboards
+1. Người dùng chọn mục **"Dashboard"**.
+2. MainFrame gửi thông tin đến PieChartPanel và BarChartPanel.
+3. 2 components này bắt đầu vẽ Chart tương ứng
+4. MainFrame hiện chart.
 ---
 
 ## 5. Class Diagram
@@ -183,20 +204,47 @@ Mô tả các luồng xử lý chính của hệ thống theo dạng từng bư�
 
 ### 6.2. Cấu trúc dữ liệu lưu trữ
 
-Mô tả các bảng / file chính và dữ liệu được lưu trữ.
+| Tên bảng / file   | Mô tả                                                                 | Dữ liệu chính                                                                 |
+|-------------------|----------------------------------------------------------------------|-------------------------------------------------------------------------------|
+| users             | Lưu thông tin người dùng hệ thống                                    | username, password_hash, role (admin/agent), created_at, last_login           |
+| apartment         | Lưu thông tin căn hộ bất động sản                                    | apartment_id, address, city, price, bedrooms, size, category, status, created_at, updated_at |
+| amenities         | Danh sách tiện ích                                                   | amenity_id, name (tên tiện ích, unique)                                       |
+| apartmentAmenities| Bảng liên kết căn hộ với tiện ích                                    | apartment_id, amenity_id                                                      |
+| favourites        | Danh sách căn hộ yêu thích của người dùng                            | username, apartment_id, created_at                                            |
+| notes             | Ghi chú của người dùng về căn hộ                                     | note_id, username, apartment_id, content, created_at, updated_at              |
+| universal_log     | Nhật ký hành động trên hệ thống                                      | log_id, table_name, action_type, record_id, username, role, content, action_time |
+| login_history     | Lịch sử đăng nhập của người dùng                                     | login_id, username, role, log_time                                            |
 
-| Tên bảng / file | Mô tả | Dữ liệu chính |
-|----------------|------|--------------|
-| | | |
-| | | |
 
 ---
 
 ## 7. Nhận xét về thiết kế (Optional)
 
-- Ưu điểm của thiết kế hiện tại
-- Hạn chế
-- Hướng cải tiến trong tương lai (nếu có)
+# Nhận xét về thiết kế hệ thống
+
+## Ưu điểm của thiết kế hiện tại
+- **Cấu trúc rõ ràng, phân tầng hợp lý**: chia thành các package `model`, `repository`, `service`, `util`, `ui` giúp dễ bảo trì và mở rộng.  
+- **Áp dụng đầy đủ nguyên lý OOP**: có encapsulation (đóng gói dữ liệu), inheritance (kế thừa từ Swing), polymorphism (ghi đè phương thức), abstraction và interface.  
+- **Sử dụng design patterns chuẩn**: DAO, DTO, Singleton, Adapter, Facade giúp tách biệt logic, tăng khả năng tái sử dụng và giảm phụ thuộc.  
+- **Luồng hoạt động được mô tả chi tiết**: login, CRUD, filtering, export CSV, dashboard đều có bước rõ ràng, dễ hình dung.  
+- **Cơ sở dữ liệu thiết kế chặt chẽ**: có constraints, foreign keys, bảng log để audit, bảng login_history để theo dõi đăng nhập.  
+- **UI trực quan**: phân chia panel, dialog, table model hợp lý, hỗ trợ vai trò khác nhau (admin/agent).  
+
+---
+
+## Hạn chế
+- **Thiếu mô tả chi tiết về bảo mật**: mới chỉ có hashing mật khẩu, chưa thấy cơ chế quản lý session nâng cao. 
+- **Phụ thuộc nhiều vào MySQL**: chưa có abstraction để dễ dàng thay đổi sang DB khác (ví dụ PostgreSQL).  
+- **UI dựa nhiều vào Swing**: giao diện có thể bị hạn chế về trải nghiệm người dùng hiện đại (so với web hoặc framework mới). 
+
+---
+
+## Hướng cải tiến trong tương lai
+- **Tăng cường bảo mật**: bổ sung JWT/session token, phân quyền chi tiết theo role, logging nâng cao.  
+- **Đa dạng hóa cơ sở dữ liệu**: thiết kế thêm lớp abstraction để dễ dàng chuyển đổi DB (MySQL ↔ PostgreSQL ↔ SQLite).  
+- **Cải thiện UI/UX**: cân nhắc chuyển sang framework web (Spring Boot + React/Vue) hoặc JavaFX để hiện đại hơn.  
+- **Mở rộng phạm vi quản lý**: thêm module cho các loại bất động sản khác, báo cáo nâng cao (ví dụ: thống kê theo thành phố, theo giá).  
+- **Khả năng triển khai thực tế**: bổ sung API RESTful để hệ thống có thể kết nối với ứng dụng di động hoặc dịch vụ bên ngoài.  
 
 ---
 
