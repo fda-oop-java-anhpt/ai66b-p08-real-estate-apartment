@@ -159,6 +159,11 @@ Mô tả các luồng xử lý chính của hệ thống theo dạng từng bư�
 3. Service gửi yêu cầu đến MySQL.
 4. MySQl thực hiện procedures.
 4. MainFrame refresh data.
+
+### 4.4 Export to CSV
+1. 
+
+### 4.5 Dashboards
 ---
 
 ## 5. Class Diagram
