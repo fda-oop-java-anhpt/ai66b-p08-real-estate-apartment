@@ -151,14 +151,14 @@ Mô tả các luồng xử lý chính của hệ thống theo dạng từng bư�
 3. Main Frame gửi thông tin đến service theo bảng tương ứng (vd: ApartmentManagement).
 4. Service gửi yêu cầu đến MySQL.
 5. MySQl kiểm tra constraints, triggers,... thực hiện yêu cầu.
-6. MainFrame refresh data.
+6. MainFrame tự động refresh data.
 
 ### 4.3. Apartment filtering
 1. Người dùng lựa chọn filter theo ý muốn.
 2. Main Frame gửi thông tin đến ApartmentSearch.
 3. Service gửi yêu cầu đến MySQL.
 4. MySQl thực hiện procedures.
-4. MainFrame refresh data.
+4. MainFrame tự động refresh data.
 
 ### 4.4 Export to CSV
 1. Người dùng nhấn nút **"Export CSV"**.  
@@ -169,8 +169,11 @@ Mô tả các luồng xử lý chính của hệ thống theo dạng từng bư�
    - Ghi từng dòng dữ liệu cho mỗi căn hộ, với các giá trị được escape đúng chuẩn.  
 5. Hiển thị thông báo **thành công** cho người dùng.  
 
-
 ### 4.5 Dashboards
+1. Người dùng chọn mục **"Dashboard"**.
+2. MainFrame gửi thông tin đến PieChartPanel và BarChartPanel.
+3. 2 components này bắt đầu vẽ Chart tương ứng
+4. MainFrame hiện chart.
 ---
 
 ## 5. Class Diagram
