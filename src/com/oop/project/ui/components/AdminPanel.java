@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class AdminPanel extends JPanel {
+    private static final long serialVersionUID = 1L;
+
     public AdminPanel() {
         setLayout(new BorderLayout());
         JTabbedPane adminTabs = new JTabbedPane();
