@@ -3,6 +3,8 @@ package com.oop.project.ui;
 import java.awt.*;
 
 public class Theme {
+    private static final long serialVersionUID = 1L;
+
     // Primary colors
     public static final Color PRIMARY = new Color(33, 150, 243);      // Blue
     public static final Color PRIMARY_DARK = new Color(25, 118, 210);
