@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Vector;
 
 public class SearchableComboBox extends JComboBox<String> {
+    private static final long serialVersionUID = 1L;
+
     private DefaultComboBoxModel<String> fullModel;
     private JTextField editorField;
     private String lastValidSelection;
