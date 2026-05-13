@@ -11,6 +11,8 @@ import java.util.Comparator;
 import java.util.List;
 
 public class ApartmentTableModel extends AbstractTableModel {
+    private static final long serialVersionUID = 1L;
+
     private final String[] columnNames = {
         "ID", "Address", "City", "Price (B VND)", "Bedrooms", "Size (m²)", "Category", "Status", "Amenities", "Notes", "Fav"
     };
