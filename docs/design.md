@@ -2,8 +2,6 @@
 
 ## 1. Danh sách các lớp và vai trò (Class List & Responsibilities)
 
-Liệt kê các class chính trong hệ thống và mô tả ngắn gọn vai trò của từng class.
-
 | Class | Package | Vai trò |
 |------|--------|--------|
 | `DBConnection` | `com.oop.project.db` | Quản lý các tham số kết nối MySQL (tệp `Connection.env`) và cung cấp các phương thức để thiết lập kết nối. |
@@ -56,24 +54,16 @@ Liệt kê các class chính trong hệ thống và mô tả ngắn gọn vai tr
 Mô tả rõ **từng nguyên lý OOP được áp dụng ở đâu trong hệ thống**.
 
 ### 2.1. Encapsulation
-- Các thuộc tính nào được khai báo `private`?
-- Truy cập thông qua getter/setter nào?
-- Lý do áp dụng encapsulation?
 
-**Mô tả:**
-> Được áp dụng và thể hiện rõ nhất ở trong tất cả các lớp POJOs và DTOs trong package model.  
-> Ví dụ lớp `Apartment`:
-> - Tất cả các thuộc tính Id, address, city, price, ... đều được khai báo `private`.
-> - Chỉ có thể truy cập thông qua các getters: `getId()`, `getAddress()`, `getCity()`, `getPrice()`, ...
-> - Đây đều là các thông tin quan trọng của căn hộ, phải được đóng gói và truy cập thông qua phương thức trung gian để đảm bảo tính toàn vẹn của dữ liệu, tránh tác động từ phía không được uỷ quyền.
+ Được áp dụng và thể hiện rõ nhất ở trong tất cả các lớp POJOs và DTOs trong package model.  
+ Ví dụ lớp `Apartment`:
+ - Tất cả các thuộc tính Id, address, city, price, ... đều được khai báo `private`.
+ - Chỉ có thể truy cập thông qua các getters: `getId()`, `getAddress()`, `getCity()`, `getPrice()`, ...
+ - Đây đều là các thông tin quan trọng của căn hộ, phải được đóng gói và truy cập thông qua phương thức trung gian để đảm bảo tính toàn vẹn của dữ liệu, tránh tác động từ phía không được uỷ quyền.
 ---
 
 ### 2.2. Inheritance
-- Class cha là gì?
-- Các class con kế thừa từ đâu?
-- Lý do sử dụng kế thừa?
 
-**Mô tả:**
 | Superclass | Subclass |
 |---------------|-------------|
 | `javax.swing.JFrame` | `LoginScreen`, `MainFrame` |
@@ -81,47 +71,34 @@ Mô tả rõ **từng nguyên lý OOP được áp dụng ở đâu trong hệ t
 | `javax.swing.JDialog` | `ApartmentDialog`, `AmenityFilterDialog`, `NotesDialog` |
 | `javax.swing.table.AbstractTableModel` | `ApartmentTableModel`, `FavoritesTableModel`, `LoginHistoryTableModel`, `UniversalLogTableModel` |
 | `javax.swing.table.TableCellRenderer` | Inner classes `AmenityCellRenderer`, `NotesButtonRenderer`, `FavButtonRenderer`, ... |
-> - Tái sử dụng (Reusability) – Có được tất cả các hành vi tích hợp sẵn của cửa sổ, bảng điều khiển, nút bấm, bảng và chỉ ghi đè những gì cần tùy chỉnh (bố cục, vẽ, xử lý sự kiện).
->
-> - Tính nhất quán (Consistency) – Lớp Theme (phông chữ, màu sắc) được áp dụng trong các lớp con này, mang lại giao diện hiện đại đồng nhất mà không cần sao chép mã.
->
-> - Tính đa hình (Polymorphism) – Các container có thể xử lý nhiều bảng điều khiển khác nhau như JPanel, giúp việc quản lý bố cục trở nên đơn giản.
+- Tái sử dụng (Reusability) – Có được tất cả các hành vi tích hợp sẵn của cửa sổ, bảng điều khiển, nút bấm, bảng và chỉ ghi đè những gì cần tùy chỉnh (bố cục, vẽ, xử lý sự kiện).
+- Tính nhất quán (Consistency) – Lớp Theme (phông chữ, màu sắc) được áp dụng trong các lớp con này, mang lại giao diện hiện đại đồng nhất mà không cần sao chép mã.
+- Tính đa hình (Polymorphism) – Các container có thể xử lý nhiều bảng điều khiển khác nhau như JPanel, giúp việc quản lý bố cục trở nên đơn giản.
 
 ---
 
 ### 2.3. Polymorphism
-- Phương thức nào được override?
-- Được gọi thông qua reference kiểu cha ở đâu?
 
-**Mô tả:**
-> - Các lớp POJOs (`Amenity`, `Apartment`, `User`, ...) đều ghi đè phương thức `getId()` từ interface `POJO`.
-> - Lớp cha `AbstractTableModel` có các phương thức `getRowCount()`, `getColumnCount()`, `getValueAt(int row, int column)`, `getColumnName(int column)`, `isCellEditable(int row, int col)` được các lớp con ghi đè (`ApartmentTableModel`, `FavoritesTableModel`, ...)
+- Các lớp POJOs (`Amenity`, `Apartment`, `User`, ...) đều ghi đè phương thức `getId()` từ interface `POJO`.
+- Lớp cha `AbstractTableModel` có các phương thức `getRowCount()`, `getColumnCount()`, `getValueAt(int row, int column)`, `getColumnName(int column)`, `isCellEditable(int row, int col)` được các lớp con ghi đè (`ApartmentTableModel`, `FavoritesTableModel`, ...)
 
 ---
 
 ### 2.4. Interface
-- Interface nào được sử dụng?
-- Vai trò của interface trong thiết kế?
 
-**Mô tả:**
-> - Các giao diện tùy chỉnh (`POJO`, `DTO`, `DAO`) xác định kiến ​​trúc cốt lõi của dự án bằng cách phân loại các lớp thành các thực thể, các phần tử chứa dữ liệu và các trình xử lý cơ sở dữ liệu.
-> - Các giao diện Swing (`TableCellRenderer`, `DocumentListener`, `ActionListener`, ...) được sử dụng rộng rãi để xây dựng giao diện người dùng hiện đại, đáp ứng nhanh và có tính tương tác cao, đồng thời vẫn giữ cho mã nguồn có tính module và dễ bảo trì.
+- Các giao diện tùy chỉnh (`POJO`, `DTO`, `DAO`) xác định kiến ​​trúc cốt lõi của dự án bằng cách phân loại các lớp thành các thực thể, các phần tử chứa dữ liệu và các trình xử lý cơ sở dữ liệu.
+- Các giao diện Swing (`TableCellRenderer`, `DocumentListener`, `ActionListener`, ...) được sử dụng rộng rãi để xây dựng giao diện người dùng hiện đại, đáp ứng nhanh và có tính tương tác cao, đồng thời vẫn giữ cho mã nguồn có tính module và dễ bảo trì.
 
 ---
 
 ### 2.5. Abstraction
-- Abstract class / method nào được sử dụng?
-- Phần chi tiết nào được ẩn đi?
 
-**Mô tả:**
-> - interface `POJO` định nghĩa 2 phương thức trừu tượng `getId()` và `toString()`.
-> - Lớp trừu tượng `AbstractTableModel` định nghĩa các phương thức trừu tượng `getRowCount()`, `getColumnCount()`, `getValueAt(row, col)`, ... .
-> - Lớp trừu tượng `StringWorker` định nghĩa phương thức trừu tượng `doInBackground()`.
+- interface `POJO` định nghĩa 2 phương thức trừu tượng `getId()` và `toString()`.
+- Lớp trừu tượng `AbstractTableModel` định nghĩa các phương thức trừu tượng `getRowCount()`, `getColumnCount()`, `getValueAt(row, col)`, ... .
+- Lớp trừu tượng `StringWorker` định nghĩa phương thức trừu tượng `doInBackground()`.
 ---
 
 ## 3. Design Patterns được sử dụng
-
-Liệt kê các design pattern (nếu có) và giải thích ngắn gọn cách áp dụng.
 
 | Design Pattern | Áp dụng ở đâu | Mục đích |
 |---------------|-------------|---------|
@@ -135,15 +112,11 @@ Liệt kê các design pattern (nếu có) và giải thích ngắn gọn cách 
 
 ## 4. Luồng hoạt động chính (Main Application Flows)
 
-Mô tả các luồng xử lý chính của hệ thống theo dạng từng bước.
-
 ### 4.1. Login
 1. Người dùng nhập username và password.
 2. LoginView gửi thông tin đăng nhập đến AuthService.
 3. AuthService kiểm tra thông tin người dùng.
 4. Nếu hợp lệ, hệ thống chuyển sang MenuView.
-
----
 
 ### 4.2. Create - Update - Delete (CRUD)
 1. Người dùng lựa chọn đơn vị data (ô/hàng/cột) muốn chỉnh sửa.
@@ -197,8 +170,7 @@ Mô tả các luồng xử lý chính của hệ thống theo dạng từng bư�
 - [ ] File (txt / csv / json)
 - [x] Database (MySQL, SQLite, ...)
 
-**Mô tả lý do lựa chọn:**
-> Database (MySQL) cung cấp độ tin cậy, hiệu suất, bảo mật và bộ tính năng cần thiết cho một hệ thống quản lý đa người dùng, dựa trên vai trò – vượt xa những gì mà các tập tin, danh sách hoặc bộ nhớ trong có thể cung cấp.
+- Database (MySQL) cung cấp độ tin cậy, hiệu suất, bảo mật và bộ tính năng cần thiết cho một hệ thống quản lý đa người dùng, dựa trên vai trò – vượt xa những gì mà các tập tin, danh sách hoặc bộ nhớ trong có thể cung cấp.
 
 ---
 
