@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.util.List;
 
 public class AuditLogPanel extends JPanel {
+    private static final long serialVersionUID = 1L;
+
     private UniversalLogTableModel tableModel;
     private JTable logTable;
     private TableRowSorter<UniversalLogTableModel> sorter;
