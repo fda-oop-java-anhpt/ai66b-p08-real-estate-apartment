@@ -25,6 +25,8 @@ import java.util.List;
 import javax.swing.Timer;
 
 public class ApartmentPanel extends JPanel {
+    private static final long serialVersionUID = 1L;
+
     private ApartmentTableModel tableModel;
     private JTable apartmentTable;
     private TableRowSorter<ApartmentTableModel> sorter;
