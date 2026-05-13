@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.util.List;
 
 public class LoginHistoryPanel extends JPanel {
+    private static final long serialVersionUID = 1L;
+
     private LoginHistoryTableModel tableModel;
     private JTable historyTable;
     private TableRowSorter<LoginHistoryTableModel> sorter;
