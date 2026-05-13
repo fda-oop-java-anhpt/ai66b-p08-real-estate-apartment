@@ -69,4 +69,9 @@ public class LoginHistoryQuery {
         requireAdmin();
         return repository.getPage(limit, offset);
     }
+    
+    public int deleteAll() throws SQLException, SecurityException {
+        requireAdmin();
+        return repository.deleteAll();
+    }
 }

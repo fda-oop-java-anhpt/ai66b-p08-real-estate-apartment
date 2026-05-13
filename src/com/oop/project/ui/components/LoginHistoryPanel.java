@@ -1,6 +1,7 @@
 package com.oop.project.ui.components;
 
 import com.oop.project.model.LoginHistory;
+import com.oop.project.service.LoginHistoryQuery;
 import com.oop.project.ui.Theme;
 import com.oop.project.util.SessionManager;
 
@@ -15,6 +16,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 public class LoginHistoryPanel extends JPanel {
@@ -25,6 +27,7 @@ public class LoginHistoryPanel extends JPanel {
     private TableRowSorter<LoginHistoryTableModel> sorter;
     private JTextField filterUserField, filterRoleField;
     private StyledButton exportButton, refreshButton;
+    private StyledButton clearHistoryButton;
 
     public LoginHistoryPanel() {
         if (!SessionManager.isAdmin()) {
@@ -85,6 +88,9 @@ public class LoginHistoryPanel extends JPanel {
 
         refreshButton = new StyledButton("Refresh", Theme.PRIMARY);
         refreshButton.addActionListener(e -> refreshTable());
+
+        clearHistoryButton = new StyledButton("Clear All", Theme.DANGER);
+        clearHistoryButton.addActionListener(e -> clearAllHistory());
     }
 
     private JTextField createFilterField(int columns) {
@@ -111,6 +117,7 @@ public class LoginHistoryPanel extends JPanel {
         filterPanel.add(filterRoleField);
         filterPanel.add(exportButton);
         filterPanel.add(refreshButton);
+        filterPanel.add(clearHistoryButton);   // <-- added here
 
         add(filterPanel, BorderLayout.NORTH);
 
@@ -180,6 +187,30 @@ public class LoginHistoryPanel extends JPanel {
             return "\"" + value.replace("\"", "\"\"") + "\"";
         }
         return value;
+    }
+
+    private void clearAllHistory() {
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "⚠️ WARNING: This will permanently delete ALL login history records.\nThis action cannot be undone.\n\nAre you sure?",
+                "Clear All Login History",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+        if (confirm == JOptionPane.YES_OPTION) {
+            try {
+                LoginHistoryQuery query = new LoginHistoryQuery();
+                int deleted = query.deleteAll();
+                JOptionPane.showMessageDialog(this,
+                        "Deleted " + deleted + " login history entries.",
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
+                refreshTable();
+            } catch (SQLException | SecurityException ex) {
+                JOptionPane.showMessageDialog(this,
+                        "Failed to clear history: " + ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 
     private static class StyledTableCellRenderer extends DefaultTableCellRenderer {

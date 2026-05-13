@@ -201,7 +201,17 @@ public class LoginHistoryRepository implements DAO {
         }
         return history;
     }
+    
+    
+    public int deleteAll() throws SQLException {
+        String sql = "DELETE FROM login_history";
+        try (Connection conn = new DBConnection().establish();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            return stmt.executeUpdate();
+        }
+    }
 
+    
     // === HELPER ===
     private LoginHistory mapRowToLoginHistory(ResultSet rs) throws SQLException {
         return new LoginHistory(

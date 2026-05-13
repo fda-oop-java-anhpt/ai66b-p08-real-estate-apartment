@@ -182,3 +182,46 @@ BEGIN
 END //
 
 DELIMITER ;
+
+
+-- =========================================================
+-- Audit log triggers – apartmentAmenities (INSERT, DELETE)
+-- =========================================================
+DELIMITER //
+
+-- INSERT into apartmentAmenities
+CREATE TRIGGER log_apartmentAmenities_insert
+AFTER INSERT ON apartmentAmenities
+FOR EACH ROW
+BEGIN
+    DECLARE user_role VARCHAR(255);
+    DECLARE amenity_name VARCHAR(255);
+    
+    -- Get current user's role
+    SELECT role INTO user_role FROM users WHERE username = @current_username;
+    
+    -- Get amenity name
+    SELECT name INTO amenity_name FROM amenities WHERE amenity_id = NEW.amenity_id;
+    
+    INSERT INTO universal_log (table_name, action_type, record_id, username, role, content)
+    VALUES ('apartmentAmenities', 'INSERT', NEW.apartment_id, @current_username, user_role,
+            CONCAT('Added amenity "', amenity_name, '" (ID ', NEW.amenity_id, ') to apartment #', NEW.apartment_id));
+END //
+
+-- DELETE from apartmentAmenities
+CREATE TRIGGER log_apartmentAmenities_delete
+AFTER DELETE ON apartmentAmenities
+FOR EACH ROW
+BEGIN
+    DECLARE user_role VARCHAR(255);
+    DECLARE amenity_name VARCHAR(255);
+    
+    SELECT role INTO user_role FROM users WHERE username = @current_username;
+    SELECT name INTO amenity_name FROM amenities WHERE amenity_id = OLD.amenity_id;
+    
+    INSERT INTO universal_log (table_name, action_type, record_id, username, role, content)
+    VALUES ('apartmentAmenities', 'DELETE', OLD.apartment_id, @current_username, user_role,
+            CONCAT('Removed amenity "', amenity_name, '" (ID ', OLD.amenity_id, ') from apartment #', OLD.apartment_id));
+END //
+
+DELIMITER ;

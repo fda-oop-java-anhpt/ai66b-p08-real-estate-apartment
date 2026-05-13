@@ -1,6 +1,7 @@
 package com.oop.project.ui.components;
 
 import com.oop.project.model.UniversalLog;
+import com.oop.project.service.UniversalLogCleanup;
 import com.oop.project.ui.Theme;
 import com.oop.project.util.SessionManager;
 
@@ -15,6 +16,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 public class AuditLogPanel extends JPanel {
@@ -26,6 +28,7 @@ public class AuditLogPanel extends JPanel {
     private JTextField filterTableField, filterActionField, filterUserField;
     private StyledButton exportButton;
     private StyledButton refreshButton;
+    private StyledButton clearLogsButton;
 
     public AuditLogPanel() {
         if (!SessionManager.isAdmin()) {
@@ -88,9 +91,12 @@ public class AuditLogPanel extends JPanel {
 
         exportButton = new StyledButton("Export CSV", Theme.WARNING);
         exportButton.addActionListener(e -> exportToCSV());
-        
+
         refreshButton = new StyledButton("Refresh", Theme.PRIMARY);
         refreshButton.addActionListener(e -> refreshTable());
+
+        clearLogsButton = new StyledButton("Clear All", Theme.DANGER);
+        clearLogsButton.addActionListener(e -> clearAllLogs());
     }
 
     private JTextField createFilterField(int columns) {
@@ -120,6 +126,7 @@ public class AuditLogPanel extends JPanel {
         filterPanel.add(filterUserField);
         filterPanel.add(exportButton);
         filterPanel.add(refreshButton);
+        filterPanel.add(clearLogsButton);   // <-- added here
 
         add(filterPanel, BorderLayout.NORTH);
 
@@ -196,6 +203,30 @@ public class AuditLogPanel extends JPanel {
             return "\"" + value.replace("\"", "\"\"") + "\"";
         }
         return value;
+    }
+
+    private void clearAllLogs() {
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "⚠️ WARNING: This will permanently delete ALL audit logs.\nThis action cannot be undone.\n\nAre you sure?",
+                "Clear All Audit Logs",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+        if (confirm == JOptionPane.YES_OPTION) {
+            try {
+                UniversalLogCleanup cleanup = new UniversalLogCleanup();
+                int deleted = cleanup.deleteAll();
+                JOptionPane.showMessageDialog(this,
+                        "Deleted " + deleted + " audit log entries.",
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
+                refreshTable();
+            } catch (SQLException | SecurityException ex) {
+                JOptionPane.showMessageDialog(this,
+                        "Failed to clear logs: " + ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 
     // Reuse the same StyledTableCellRenderer from ApartmentPanel (or copy it here)
