@@ -16,6 +16,8 @@ import java.util.List;
 import java.awt.event.ActionEvent;
 
 public class NotesDialog extends JDialog {
+    private static final long serialVersionUID = 1L;
+
     private final int apartmentId;
     private final NoteManagement noteService;
     private JPanel cardsPanel;
