@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class AmenityFilterDialog extends JDialog {
+    private static final long serialVersionUID = 1L;
+
     private JTextField searchField;
     private JList<AmenityItem> amenityList;
     private DefaultListModel<AmenityItem> listModel;
