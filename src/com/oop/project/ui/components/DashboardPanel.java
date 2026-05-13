@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class DashboardPanel extends JPanel {
+    private static final long serialVersionUID = 1L;
+
     private JTabbedPane chartTabs;
     private SummaryPanel summaryPanel;
     private BarChartPanel barChart;
