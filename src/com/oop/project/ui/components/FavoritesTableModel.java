@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FavoritesTableModel extends AbstractTableModel {
+    private static final long serialVersionUID = 1L;
+
     private final String[] columns = {
         "ID", "Address", "City", "Price (B VND)", "Bedrooms", "Size (m²)", "Category", "Status", "Amenities", "Notes", ""
     };
