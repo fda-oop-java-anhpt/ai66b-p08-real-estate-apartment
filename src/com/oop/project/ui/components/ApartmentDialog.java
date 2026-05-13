@@ -12,6 +12,8 @@ import java.awt.*;
 import java.util.List;
 
 public class ApartmentDialog extends JDialog {
+    private static final long serialVersionUID = 1L;
+
     private JTextField addressField, priceField, bedroomsField, sizeField;
     private JComboBox<String> statusCombo;
     private SearchableComboBox cityCombo;
