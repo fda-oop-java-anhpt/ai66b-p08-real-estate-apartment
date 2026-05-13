@@ -12,6 +12,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class LoginScreen extends JFrame {
+    private static final long serialVersionUID = 1L;
+
     // Input fields
     private StyledTextField usernameField;
     private StyledPasswordField passwordField;
