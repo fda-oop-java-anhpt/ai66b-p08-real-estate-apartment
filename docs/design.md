@@ -178,14 +178,14 @@ Mô tả rõ **từng nguyên lý OOP được áp dụng ở đâu trong hệ t
 
 | Tên bảng / file   | Mô tả                                                                 | Dữ liệu chính                                                                 |
 |-------------------|----------------------------------------------------------------------|-------------------------------------------------------------------------------|
-| users             | Lưu thông tin người dùng hệ thống                                    | username, password_hash, role (admin/agent), created_at, last_login           |
-| apartment         | Lưu thông tin căn hộ bất động sản                                    | apartment_id, address, city, price, bedrooms, size, category, status, created_at, updated_at |
-| amenities         | Danh sách tiện ích                                                   | amenity_id, name (tên tiện ích, unique)                                       |
-| apartmentAmenities| Bảng liên kết căn hộ với tiện ích                                    | apartment_id, amenity_id                                                      |
-| favourites        | Danh sách căn hộ yêu thích của người dùng                            | username, apartment_id, created_at                                            |
-| notes             | Ghi chú của người dùng về căn hộ                                     | note_id, username, apartment_id, content, created_at, updated_at              |
-| universal_log     | Nhật ký hành động trên hệ thống                                      | log_id, table_name, action_type, record_id, username, role, content, action_time |
-| login_history     | Lịch sử đăng nhập của người dùng                                     | login_id, username, role, log_time                                            |
+| `users`             | Lưu thông tin người dùng hệ thống                                    | username, password_hash, role (admin/agent), created_at, last_login           |
+| `apartment`         | Lưu thông tin căn hộ bất động sản                                    | apartment_id, address, city, price, bedrooms, size, category, status, created_at, updated_at |
+| `amenities`         | Danh sách tiện ích                                                   | amenity_id, name (tên tiện ích, unique)                                       |
+| `apartmentAmenities` | Bảng liên kết căn hộ với tiện ích                                    | apartment_id, amenity_id                                                      |
+| `favourites`        | Danh sách căn hộ yêu thích của người dùng                            | username, apartment_id, created_at                                            |
+| `notes`             | Ghi chú của người dùng về căn hộ                                     | note_id, username, apartment_id, content, created_at, updated_at              |
+| `universal_log`     | Nhật ký hành động trên hệ thống                                      | log_id, table_name, action_type, record_id, username, role, content, action_time |
+| `login_history`     | Lịch sử đăng nhập của người dùng                                     | login_id, username, role, log_time                                            |
 
 
 ---
