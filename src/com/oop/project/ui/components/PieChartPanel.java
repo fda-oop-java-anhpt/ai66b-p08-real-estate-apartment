@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PieChartPanel extends JPanel {
+    private static final long serialVersionUID = 1L;
+
     private final DashboardService service = new DashboardService();
     private JComboBox<String> typeCombo;
     private JComboBox<String> cityCombo;
