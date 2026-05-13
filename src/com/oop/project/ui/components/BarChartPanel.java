@@ -11,6 +11,8 @@ import java.util.Comparator;
 import java.util.List;
 
 public class BarChartPanel extends JPanel {
+    private static final long serialVersionUID = 1L;
+
     private final DashboardService service = new DashboardService();
     private JComboBox<String> metricCombo;
     private JComboBox<String> sortCombo;
