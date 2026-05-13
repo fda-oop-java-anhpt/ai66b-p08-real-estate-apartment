@@ -7,6 +7,8 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class NotesPanel extends JPanel {
+    private static final long serialVersionUID = 1L;
+
     private JTable favoritesTable;
     private StyledButton removeButton;
 
