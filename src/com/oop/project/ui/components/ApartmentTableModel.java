@@ -86,14 +86,14 @@ public class ApartmentTableModel extends AbstractTableModel {
             case 0: return apt.getApartmentId();
             case 1: return apt.getAddress();
             case 2: return apt.getCity();
-            case 3: return String.format("%.2f", apt.getPrice());
+            case 3: return apt.getPrice();        
             case 4: return apt.getBedrooms();
-            case 5: return String.format("%.1f", apt.getSize());
+            case 5: return apt.getSize();       
             case 6: return apt.getCategory();
             case 7: return apt.getStatus();
             case 8: return apt.getAmenities();
-            case 9: return "";       // Notes placeholder
-            case 10: return "";      // Fav placeholder
+            case 9: return "";
+            case 10: return "";
             default: return null;
         }
     }
@@ -107,9 +107,9 @@ public class ApartmentTableModel extends AbstractTableModel {
     public Class<?> getColumnClass(int columnIndex) {
         switch (columnIndex) {
             case 0: return Integer.class;
-            case 3: return String.class;
+            case 3: return Double.class;
             case 4: return Integer.class;
-            case 5: return String.class;
+            case 5: return Double.class;
             default: return String.class;
         }
     }

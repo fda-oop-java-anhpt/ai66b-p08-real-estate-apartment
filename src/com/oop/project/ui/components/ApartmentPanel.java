@@ -445,6 +445,17 @@ public class ApartmentPanel extends JPanel {
         public Component getTableCellRendererComponent(JTable table, Object value,
                                                        boolean isSelected, boolean hasFocus,
                                                        int row, int column) {
+            // Format numeric values
+            if (value instanceof Number) {
+                Number num = (Number) value;
+                if (column == 3) { // Price
+                    value = String.format("%.2f", num.doubleValue());
+                } else if (column == 5) { // Size
+                    value = String.format("%.1f", num.doubleValue());
+                } else {
+                    value = num.toString();
+                }
+            }
             super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             setHorizontalAlignment(SwingConstants.LEFT);
             setBorder(new EmptyBorder(0, 12, 0, 12));
