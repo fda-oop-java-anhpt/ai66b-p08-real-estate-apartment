@@ -17,6 +17,8 @@ import java.util.List;
  * A panel that displays a searchable list of amenities with checkboxes.
  */
 public class AmenitySelectionPanel extends JPanel {
+    private static final long serialVersionUID = 1L;
+
     private JTextField searchField;
     private JList<AmenityItem> amenityList;
     private DefaultListModel<AmenityItem> listModel;
