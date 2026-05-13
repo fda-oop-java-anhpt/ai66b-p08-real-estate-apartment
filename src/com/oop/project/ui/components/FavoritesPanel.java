@@ -25,6 +25,8 @@ import java.util.List;
 import javax.swing.Timer;          // correct import
 
 public class FavoritesPanel extends JPanel {
+    private static final long serialVersionUID = 1L;
+
     private FavoritesTableModel tableModel;
     private JTable favoritesTable;
     private TableRowSorter<FavoritesTableModel> sorter;
