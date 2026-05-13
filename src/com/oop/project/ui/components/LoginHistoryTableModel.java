@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LoginHistoryTableModel extends AbstractTableModel {
+    private static final long serialVersionUID = 1L;
+
     private final String[] columnNames = {"ID", "Username", "Role", "Login Time"};
     private List<LoginHistory> entries = new ArrayList<>();
     private final LoginHistoryQuery queryService;
