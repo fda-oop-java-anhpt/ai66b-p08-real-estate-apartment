@@ -151,15 +151,7 @@ Mô tả rõ **từng nguyên lý OOP được áp dụng ở đâu trong hệ t
 
 ## 5. Class Diagram
 
-- Vẽ **class diagram** cho hệ thống bằng **draw.io**.
-- Sơ đồ phải thể hiện:
-  - Quan hệ kế thừa
-  - Quan hệ association / composition (nếu có)
-  - Interface và class implement
-
-📌 **Yêu cầu:**
-- Xuất sơ đồ thành file ảnh (PNG hoặc JPG).
-- Lưu tại: `docs/class-diagram.png`
+[docs/class-diagram.png](https://github.com/fda-oop-java-anhpt/ai66b-p08-real-estate-apartment/blob/f1c8662e6eb86d40b1601fa40d8d4d2618ea78a8/docs/class-diagram.png)
 
 ---
 
