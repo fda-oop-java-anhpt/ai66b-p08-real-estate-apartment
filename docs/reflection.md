@@ -23,3 +23,5 @@ Your project already uses POJOs, DTOs, DAOs, and services. Inheritance fits natu
 ---
 
 ### What was the most difficult part?
+
+The most difficult parts were the repository and service layers. The repository layer was challenging because it had to ensure consistent, efficient queries and maintain data integrity across complex relationships. The service layer was even harder since it had to coordinate multiple repositories, enforce business rules, and handle edge cases — making it the core of the app’s logic and the most demanding to implement.
