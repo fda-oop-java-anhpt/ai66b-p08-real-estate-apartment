@@ -9,6 +9,17 @@
 
 ### Why use inheritance instead of if-else?
 
+* Encapsulation of behavior  
+With inheritance, each subclass (e.g., `StyledButton`, `StyledComboBox`, or different `Repository` classes) encapsulates its own behavior. A giant if-else block is not neccessary to check what type of object the system is dealing with — the right method is automatically called via polymorphism.
+
+* Readability and maintainability
+`if-else` chains quickly become messy when there are many conditions. Inheritance organizes logic into separate classes, making the code easier to read and maintain.
+
+* Extensibility
+Adding a new feature with `if-else` means editing existing code and risking bugs. With inheritance, creating a new subclass and override the necessary methods is much more simple — no need to touch the old code.
+
+* Aligns with OOP principles  
+Your project already uses POJOs, DTOs, DAOs, and services. Inheritance fits naturally into this architecture, ensuring consistency across backend, frontend, and database layers.
 ---
 
 ### What was the most difficult part?
