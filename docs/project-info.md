@@ -8,3 +8,9 @@
 - Nguyễn Đỗ Ánh Dương – Database
 - Nguyễn Sơn Hải - Frontend
 - Nguyễn Đình Thắng - Backend
+
+## GitHub Account
+- Nguyễn Đỗ Ánh Dương - aizun
+- Nguyễn Sơn Hải - hai249
+- Nguyễn Đình Thắng - thangkaka26
+
